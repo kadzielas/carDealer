@@ -2,38 +2,41 @@ package carDealer;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 @Getter
 public class ListOfCars extends ModelClass {
 
-        private static List<CreateCar> ListOfAudi = new ArrayList<>();
-        private static List<CreateCar> ListOfBMW = new ArrayList<>();
-        private static List<CreateCar> ListOfSeat = new ArrayList<>();
 
-        public List<CreateCar> getListOfAudi(){
-            return ListOfAudi;
-        }
-        public List<CreateCar> getListOfBMW(){
-            return ListOfBMW;
-        }
-        public List<CreateCar> getListOfSeat(){
-            return ListOfSeat;
+        private  static List<CreateCar> ListOfCars = new ArrayList<>();
+        public List<CreateCar> getListOfCars() {
+            return ListOfCars;
         }
 
-        public void addAudi(CreateCar createdCar){
+
+        public void addCar(CreateCar createdCar){
             CreateCar car = new CreateCar();
-            ListOfAudi.add(createdCar);
+            ListOfCars.add(createdCar);
         }
-        public void addBMW(CreateCar createdCar){
-            CreateCar car = new CreateCar();
-            ListOfBMW.add(createdCar);
-    }
-        public void addSeat(CreateCar createdCar){
-            CreateCar car = new CreateCar();
-            ListOfSeat.add(createdCar);
-    }
+
+        public static void carStream(){
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Provide manufacturer name: ");
+            String filterManufacturer = scanner.next();
+            ListOfCars.stream()
+                    .filter(car -> car.getManufacturer().equalsIgnoreCase(filterManufacturer))
+                    .forEach(car -> System.out.println("Model: " + car.getModel() + " " + "Engine: " + car.getEngine() + " " + "Price: " + car.getPrice()));
+        }
+
+        public static void showList(){
+            ListOfCars car = new ListOfCars();
+            car.getListOfCars().forEach(
+                    createcar ->
+                            System.out.println("Manufacturer: " + createcar.getManufacturer() + "\nModel: " + createcar.getModel() + "\nEngine: " + createcar.getEngine() + "\nPrice: " + createcar.getPrice() + "\n")
+            );
+        }
+
+
+
 
 }

@@ -1,7 +1,9 @@
 package carDealer;
 
+import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 public class CreateCar extends ListOfCars {
     public void validationPrice(){
@@ -23,16 +25,17 @@ public class CreateCar extends ListOfCars {
         } while (true);
     }
 
-    public void validationEngine(){
+    public void validationEngine() {
         Scanner scanner = new Scanner(System.in);
+
 
         do {
             try {
-                engine = scanner.nextFloat();
-                if (engine >= 0.0f) {
+                engine2 = scanner.nextBigDecimal();
+                if (isBiggerThanZero(engine2)) {
                     break;
                 }
-            }catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 e.getStackTrace();
                 System.out.println("Please provide correct value:");
                 scanner.next();
@@ -42,12 +45,32 @@ public class CreateCar extends ListOfCars {
         } while (true);
     }
 
-    public static void AUDI () {
+   private Boolean isBiggerThanZero(BigDecimal firstValue) {
+        //TODO short if statement
+       //TODo poczytaj o bigdecimal
+        int comparisonValue = firstValue.compareTo(BigDecimal.ZERO);
+        if ( comparisonValue > 0) {
+            return  true;
+        } else if (comparisonValue < 0) {
+            return false;
+        } else {
+            return false;
+        }
+   }
+
+        public Predicate<CreateCar> TESTVALID(int price){
+            Predicate<CreateCar> carPredicate = car -> car.getPrice() < price;
+            Predicate<CreateCar> carPredicate2 = car -> car.getPrice() < price;
+            return carPredicate.and(carPredicate2);
+    }
+
+    public static void Car(){
         CreateCar validator = new CreateCar();
         Scanner scanner = new Scanner(System.in);
 
         CreateCar car = new CreateCar();
-        car.setManufacturer("Audi");
+        System.out.println("Provide manufacturer: ");
+        car.setManufacturer(scanner.next());
         System.out.print("Provide model: ");
         car.setModel(scanner.next());
         System.out.print("Provide price: ");
@@ -56,42 +79,8 @@ public class CreateCar extends ListOfCars {
         System.out.print("Provide engine: ");
         validator.validationEngine();
         car.setEngine(validator.getEngine());
-        car.addAudi(car);
-        System.out.println("\nCar has been created with following deatils: " + "\nModel: " + car.getModel() + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice());
-    }
-    public static void BMW () {
-        CreateCar validator = new CreateCar();
-        Scanner scanner = new Scanner(System.in);
+        car.addCar(car);
+        System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel() + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice());
 
-        CreateCar car = new CreateCar();
-        car.setManufacturer("BMW");
-        System.out.print("Provide model: ");
-        car.setModel(scanner.next());
-        System.out.print("Provide price: ");
-        validator.validationPrice();
-        car.setPrice(validator.getPrice());
-        System.out.print("Provide engine: ");
-        validator.validationEngine();
-        car.setEngine(validator.getEngine());
-        car.addBMW(car);
-        System.out.println("\nCar has been created with following deatils: " + "\nModel: " + car.getModel() + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice());
     }
-    public static void SEAT () {
-        CreateCar validator = new CreateCar();
-        Scanner scanner = new Scanner(System.in);
-
-        CreateCar car = new CreateCar();
-        car.setManufacturer("Seat");
-        System.out.print("Provide model: ");
-        car.setModel(scanner.next());
-        System.out.print("Provide price: ");
-        validator.validationPrice();
-        car.setPrice(validator.getPrice());
-        System.out.print("Provide engine: ");
-        validator.validationEngine();
-        car.setEngine(validator.getEngine());
-        car.addSeat(car);
-        System.out.println("\nCar has been created with following deatils: " + "\nModel: " + car.getModel() + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice());
-    }
-
 }
