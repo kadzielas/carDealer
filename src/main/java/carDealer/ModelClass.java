@@ -14,8 +14,8 @@ public class ModelClass {
 
     private String manufacturer;
     private String model;
-    public float engine;
     public BigDecimal engine2;
-    public int price;
+    public BigDecimal price2;
+    public Currency currency;
     
 }

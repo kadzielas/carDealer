@@ -1,5 +1,6 @@
 package carDealer;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class ListOfReadyCars extends ListOfCars{
@@ -9,23 +10,26 @@ public class ListOfReadyCars extends ListOfCars{
 
         CreateCar test1 = new CreateCar();
         test1.setManufacturer("Audi");
-        test1.setModel("a10");
-        test1.setPrice(20000);
-        test1.setEngine(2.0f);
+        test1.setModel("a7");
+        test1.setPrice2(new BigDecimal("96000.00"));
+        test1.setEngine2(new BigDecimal("3.5"));
+        test1.setCurrency(Currency.PLN);
         test1.addCar(test1);
 
         CreateCar test2 = new CreateCar();
         test2.setManufacturer("Seat");
         test2.setModel("Ibiza");
-        test2.setPrice(696969);
-        test2.setEngine(1.4f);
+        test2.setPrice2(new BigDecimal("8000.00"));
+        test2.setEngine2(new BigDecimal("1.6"));
+        test2.setCurrency(Currency.EUR);
         test2.addCar(test2);
 
         CreateCar test3 = new CreateCar();
         test3.setManufacturer("Skoda");
         test3.setModel("Fabia");
-        test3.setPrice(15000);
-        test3.setEngine(5.0f);
+        test3.setPrice2(new BigDecimal("7000.00"));
+        test3.setEngine2(new BigDecimal("1.4"));
+        test3.setCurrency(Currency.USD);
         test3.addCar(test3);
 
         do {
