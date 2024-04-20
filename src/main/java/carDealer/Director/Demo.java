@@ -1,15 +1,18 @@
-package carDealer;
+package carDealer.Director;
+import carDealer.Builders.CarBuilder;
+import carDealer.Car.CarsMenu;
+
 import java.util.Scanner;
 
 
-public class Main {
+public class Demo {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int menu;
 
         do{
             System.out.println("\nMAIN MENU\n");
-            System.out.println("1.List of ready cars");
+            System.out.println("1.Buy car");
             System.out.println("2.Add new car");
             System.out.println("3.Exit\n");
 
@@ -18,10 +21,10 @@ public class Main {
 
             switch (menu) {
                 case 1:
-                    ListOfReadyCars.CarList();
+                    CarsMenu.CarList();
                     break;
                 case 2:
-                    CreateCar.Car();
+                    CarBuilder.Car();
                     break;
                 case 3:
                     System.out.println("\nSee you later!");
