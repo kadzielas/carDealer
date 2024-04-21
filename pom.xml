@@ -16,21 +16,7 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
-
-    <annotationProcessorPaths>
-        <path>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.32</version>
-        </path>
-    </annotationProcessorPaths>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

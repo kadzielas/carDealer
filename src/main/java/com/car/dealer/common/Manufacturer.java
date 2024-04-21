@@ -1,4 +1,4 @@
-package carDealer.Builders;
+package com.car.dealer.common;
 
 public enum Manufacturer {
     Audi,

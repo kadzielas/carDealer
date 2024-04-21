@@ -1,6 +1,7 @@
-package carDealer.Director;
-import carDealer.Builders.CarBuilder;
-import carDealer.Car.CarsMenu;
+package com.car.dealer;
+
+import com.car.dealer.service.CarBuilder;
+import com.car.dealer.facade.CarFacade;
 
 import java.util.Scanner;
 
@@ -9,8 +10,8 @@ public class Demo {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int menu;
-
-        do{
+        //loadtestddata
+        do {
             System.out.println("\nMAIN MENU\n");
             System.out.println("1.Buy car");
             System.out.println("2.Add new car");
@@ -21,7 +22,7 @@ public class Demo {
 
             switch (menu) {
                 case 1:
-                    CarsMenu.CarList();
+                    CarFacade.CarList();
                     break;
                 case 2:
                     CarBuilder.Car();
@@ -29,7 +30,7 @@ public class Demo {
                 case 3:
                     System.out.println("\nSee you later!");
             }
-        }while (menu != 5);
+        } while (menu != 5);
         scanner.close();
     }
 }
