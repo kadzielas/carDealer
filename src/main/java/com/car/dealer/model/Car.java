@@ -2,16 +2,17 @@ package com.car.dealer.model;
 
 import com.car.dealer.common.Currency;
 import lombok.*;
-
 import java.math.BigDecimal;
 
 @Data
+@Builder
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class Car {
-    public Integer ID;
-    public String manufacturer;
+    private Integer ID;
+    private String manufacturer;
     private String model;
-    public BigDecimal engine;
-    public BigDecimal price;
-    public Currency currency;
+    private BigDecimal engine;
+    private BigDecimal price;
+    private Currency currency;
 }

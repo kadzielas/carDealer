@@ -1,8 +1,7 @@
 package com.car.dealer;
 
-import com.car.dealer.service.CarBuilder;
 import com.car.dealer.facade.CarFacade;
-
+import com.car.dealer.service.CarService;
 import java.util.Scanner;
 
 
@@ -25,7 +24,7 @@ public class Demo {
                     CarFacade.CarList();
                     break;
                 case 2:
-                    CarBuilder.Car();
+                    CarService.addCarForm();
                     break;
                 case 3:
                     System.out.println("\nSee you later!");

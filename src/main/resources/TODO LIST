@@ -1,16 +1,16 @@
-1. Popraw nazewnictwo metod bo są nieczytelnie np TESTVALID
-2. Klasa CarValidator służy wyłącznie do walidacji pól, nie do tworzenia, musisz przenieść imeplementacje tworzenia auta do serwisu :)
-    a) pobierz dane na biężaco od usera
-    b) waliduj je na biężąco póki użytkownik nie wprowadzi wymaganych przez Ciebie danych
-    c) jesli wszystko bedzie ok, przekaż prawidłowe dane do stworzenia nowego obiektu (Car)
-    d) twórz obiekty za pomocą buildera
-3. Mając teraz ładnie nazwane klasy i podzielone na pakiety, pomysl o tym czy aktualnie dziedziczenia jest okej
-4. Przemysl aktualnie zrobione voidy, czy mogłyby zwrócić konkretny obiekt zamiast pustego stanu void
-5. CarBuilder klasa jest do wyjebania i zmergować ją trzeba do serwisu
-6. przejrzyj adnotacje na klasach bo jest bałagan np. @Getter itd
-7. Przenies tworzenie danych testowych w jakies sensowne miejsce, tak aby nie robiły bałaganu
-8. Ustaw zmienne na prywatne i polegaj na getterach, bo w niektórych klasach używasz np. car.currency
-9. pomysl jak wyjebac te listy
+1. Popraw nazewnictwo metod bo są nieczytelnie np TESTVALID - zrobione
+2. Klasa CarValidator służy wyłącznie do walidacji pól, nie do tworzenia, musisz przenieść imeplementacje tworzenia auta do serwisu :) - zrobione
+    a) pobierz dane na biężaco od usera - zrobione
+    b) waliduj je na biężąco póki użytkownik nie wprowadzi wymaganych przez Ciebie danych - zrobione
+    c) jesli wszystko bedzie ok, przekaż prawidłowe dane do stworzenia nowego obiektu (Car) - zrobione
+    d) twórz obiekty za pomocą buildera - zrobione
+3. Mając teraz ładnie nazwane klasy i podzielone na pakiety, pomysl o tym czy aktualnie dziedziczenia jest okej - zrobione
+4. Przemysl aktualnie zrobione voidy, czy mogłyby zwrócić konkretny obiekt zamiast pustego stanu void - zrobione
+5. CarBuilder klasa jest do wyjebania i zmergować ją trzeba do serwisu - zrobione
+6. przejrzyj adnotacje na klasach bo jest bałagan np. @Getter itd - zrobione
+7. Przenies tworzenie danych testowych w jakies sensowne miejsce, tak aby nie robiły bałaganu - zrobione
+8. Ustaw zmienne na prywatne i polegaj na getterach, bo w niektórych klasach używasz np. car.currency - zrobione
+9. pomysl jak wyjebac te listy - zrobione
 
 ***ad.7 jako bonusowe za tequilke ja stawiam jak przeniesiesz wczytywanie danych testowych z pliku txt***
 ***Na koneic dziala programu zapisuj aktualną listę samochodów***
