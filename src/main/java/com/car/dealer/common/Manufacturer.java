@@ -1,6 +1,7 @@
 package com.car.dealer.common;
 
 public enum Manufacturer {
+
     Audi,
     BMW,
     Mercedes,

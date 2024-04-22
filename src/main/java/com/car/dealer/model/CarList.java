@@ -8,4 +8,6 @@ public record CarList(List<Car> carList) {
     public List<Car> getCarsList() {
         return CarsList;
     }
+
+    //todo poco to?? poczytaj o rekordach i wyjeb to
 }

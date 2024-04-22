@@ -39,4 +39,5 @@ public class CarFacade {
     }
 
     //todo dodaj metode ktora zaladuje ci dane testowe, gdzie uwazasz ze to be sluszne
+    //todo???
 }
