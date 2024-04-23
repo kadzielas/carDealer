@@ -2,17 +2,17 @@ package com.car.dealer.common;
 
 public enum Manufacturer {
 
-    Audi,
+    AUDI,
     BMW,
-    Mercedes,
-    Seat,
-    Skoda,
-    Chevrolet,
-    Hyundai,
-    Nissan,
-    Ford,
-    Toyota,
-    Volkswagen,
-    Peugeot,
-    Opel
+    MERCEDES,
+    SEAT,
+    SKODA,
+    CHEVROLET,
+    HYUNDAI,
+    NISSAN,
+    FORD,
+    TOYOTA,
+    VOLKSWAGEN,
+    PEUGEOT,
+    OPEL
 }

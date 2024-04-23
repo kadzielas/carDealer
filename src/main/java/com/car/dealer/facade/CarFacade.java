@@ -1,5 +1,6 @@
 package com.car.dealer.facade;
 
+import com.car.dealer.model.Car;
 import com.car.dealer.service.CarService;
 import java.util.Scanner;
 public class CarFacade {
@@ -19,17 +20,17 @@ public class CarFacade {
             switch (menu){
 
                 case 1:
-                    CarService.showAllCars();
+                    CarService.showAllCars(new Car());
                     System.out.println("\n");
                     break;
 
                 case 2:
-                    CarService.findByManufacturer();
+                    CarService.findByManufacturer(new Car());
                     System.out.println("\n");
                     break;
 
                 case 3:
-                    CarService.showLoanPrediction();
+                    CarService.showLoanPrediction(new Car());
                     System.out.println("\n");
                     break;
 

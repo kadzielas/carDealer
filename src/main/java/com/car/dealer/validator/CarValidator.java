@@ -1,5 +1,7 @@
 package com.car.dealer.validator;
 import com.car.dealer.common.Currency;
+import com.car.dealer.common.Manufacturer;
+
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -29,6 +31,20 @@ public class CarValidator {
                 System.out.println("Please provide correct currency: ");
             }
         } while (true); return currency;
+    }
+
+    public Manufacturer validateManufacturer(Manufacturer manufacturer) {
+        do {
+            Scanner scanner = new Scanner(System.in);
+            try {
+                String manufacturerInput = scanner.nextLine().toUpperCase();
+                manufacturer = Manufacturer.valueOf(manufacturerInput);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Please provide correct manufacturer: ");
+            }
+        } while (true);
+        return manufacturer;
     }
 
     public BigDecimal validatePrice(BigDecimal price) {
