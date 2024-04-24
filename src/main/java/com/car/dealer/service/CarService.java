@@ -1,17 +1,12 @@
 package com.car.dealer.service;
 
 import com.car.dealer.model.Car;
-import com.car.dealer.common.Currency;
 import com.car.dealer.common.Manufacturer;
 import com.car.dealer.validator.CarValidator;
-import com.car.dealer.model.CarList;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static com.car.dealer.model.CarList.CarsList;
 
 
@@ -48,24 +43,23 @@ public class CarService extends Car {
                         .build();
         CarsList.add(newCar);
 
-
         System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
                 + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice() + " "
                 + car.getCurrency());
         return newCar;
     }
 
-
-
-    public static Car findByManufacturer(Car car) {
-
+    public static Manufacturer testScanner() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Provide manufacturer name: ");
         String filterManufacturer = scanner.next().toUpperCase();
-        Manufacturer txt = Manufacturer.valueOf(filterManufacturer);
-        car.setManufacturer(txt);
+        Manufacturer manufacturer = Manufacturer.valueOf(filterManufacturer);
+        return manufacturer;
+    }
+
+    public static Car findByManufacturer(Car car) {
         CarsList.stream()
-                .filter(x -> x.getManufacturer().equals(txt)) //todo tu moze byc uzyty od razu scanner
+                .filter(x -> x.getManufacturer().equals(testScanner()))
                 .forEach(e -> System.out.println("ID: " + e.getID() + " " + "Model: " + e.getModel() + " " +
                         "Engine: " + e.getEngine() + " " + "Price: " + e.getPrice() + " " + e.getCurrency()));
                 return car;
@@ -78,41 +72,39 @@ public class CarService extends Car {
         return car;
     }
 
-    public static Car showLoanPrediction(Car car) {
+    public static Car selectCarToPrediction(Car car) {
         Scanner scanner = new Scanner(System.in);
-        AtomicReference<BigDecimal> onLoanCost = new AtomicReference<>();//todo co to jest atomicreferencje, wez uzyj czegos nromalnego
-        AtomicReference<Currency> onLoanCurrency = new AtomicReference<>();
-        BigDecimal year = new BigDecimal("12");
-        BigDecimal percent = new BigDecimal("0.15");
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
         int selectedCar = scanner.nextInt();
-        CarsList.stream()
+
+        Car selectedCarObject = CarsList.stream()
                 .filter(x -> x.getID() == selectedCar)
-                .forEach(x -> {
-                    onLoanCost.set(x.getPrice().setScale(2, RoundingMode.HALF_UP));
-                    onLoanCurrency.set(x.getCurrency());
-                    System.out.println("Selected car: " + "\nManufacturer: " + x.getManufacturer() + " | "
-                            + "Model: " + x.getModel() + " | " + "Engine: " + x.getEngine() + " | "
-                            + "Price: " + x.getPrice() + " " + x.getCurrency() + "\n");
-                });
+                .findFirst()
+                .orElse(null);
 
-        System.out.println(onLoanCost);
-        BigDecimal selectedCarPrice = onLoanCost.get();
-        System.out.println(selectedCarPrice);
-        BigDecimal yearCost = selectedCarPrice.divide(year, 0, RoundingMode.DOWN);
-        if (selectedCarPrice.compareTo(new BigDecimal("50000")) < 0) {//todo spradziles czy to dziala jak trzeba? uzyj compare to, to chujowo dziala
-            percent = BigDecimal.valueOf(0.25).max(percent);
+        if (selectedCarObject != null) {
+
+            System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() + " | "
+                    + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " + selectedCarObject.getEngine() + " | "
+                    + "Price: " + selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
         }
-        BigDecimal percentService = yearCost.multiply(percent);
-        BigDecimal totalOneYear = yearCost.add(percentService);
-        BigDecimal totalTwoYears = totalOneYear.divide(BigDecimal.valueOf(2), 0, RoundingMode.DOWN);
-        BigDecimal totalThreeYears = totalOneYear.divide(BigDecimal.valueOf(3), 0, RoundingMode.DOWN);//todo te 4 linie da sie zapisac w jednej lini, wydziel na to metode bedzie czytelne
+        return checkLoanPrice(selectedCarObject);
 
-        System.out.println("One year loan cost per month: " + totalOneYear + " " + onLoanCurrency +
-                "\nTwo years loan cost per month: " + totalTwoYears + " " + onLoanCurrency +
-                "\nThree years loan cost per month: " + totalThreeYears + " " + onLoanCurrency);
+    }
 
+    public static Car checkLoanPrice(Car car){
+        BigDecimal year = new BigDecimal("12");
+        BigDecimal percent = new BigDecimal("0.15");
+        BigDecimal yearCost = car.getPrice().divide(year, 2, RoundingMode.HALF_UP);
+        BigDecimal totalCost = yearCost.multiply(percent);
+        BigDecimal totalOneYear = yearCost.add(totalCost).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal totalTwoYeras = totalOneYear.divide(BigDecimal.valueOf(2), 2, RoundingMode.HALF_UP);
+        BigDecimal totalThreeYeras = totalOneYear.divide(BigDecimal.valueOf(3), 2, RoundingMode.HALF_UP);
+
+        System.out.println("One year loan cost per month: " + totalOneYear + " " + car.getCurrency() +
+                "\nTwo years loan cost per month: " + totalTwoYeras + " " + car.getCurrency() +
+                "\nThree years loan cost per month: " + totalThreeYeras + " " + car.getCurrency());
         return car;
     }
 }

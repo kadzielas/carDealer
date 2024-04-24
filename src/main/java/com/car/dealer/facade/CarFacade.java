@@ -30,7 +30,7 @@ public class CarFacade {
                     break;
 
                 case 3:
-                    CarService.showLoanPrediction(new Car());
+                    CarService.selectCarToPrediction(new Car());
                     System.out.println("\n");
                     break;
 
@@ -39,6 +39,4 @@ public class CarFacade {
         } while (menu != 4);
     }
 
-    //todo dodaj metode ktora zaladuje ci dane testowe, gdzie uwazasz ze to be sluszne
-    //todo???
 }
