@@ -19,3 +19,9 @@
 
 FINAL
 jesli projekt nie bedzie na czerwono, sprawdz czy się buduje za pomocą mvn clean install w cmd
+
+
+MOJE TODO
+1.Podczas tworzenia samochodu, funkcja nie sprawdza jaki jest kolejny wolny ID tylko idzie z powrotem od 1
+2.Duplikuje samochody (jeden jest dodany do listy podczas tworzenia samochodu, a drugi podczas załadowania pliku)
+3.Zapisuje się tylko jeden samochód
