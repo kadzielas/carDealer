@@ -12,16 +12,16 @@
 8. Ustaw zmienne na prywatne i polegaj na getterach, bo w niektórych klasach używasz np. car.currency - zrobione
 9. pomysl jak wyjebac te listy - zrobione
 
-***ad.7 jako bonusowe za tequilke ja stawiam jak przeniesiesz wczytywanie danych testowych z pliku txt***
-***Na koneic dziala programu zapisuj aktualną listę samochodów***
-***Dodaj usuwanie samochodów***
-***Dodaj aktualizaowanie samochodów***
+***ad.7 jako bonusowe za tequilke ja stawiam jak przeniesiesz wczytywanie danych testowych z pliku txt*** - zrobione
+***Na koneic dziala programu zapisuj aktualną listę samochodów*** - zrobione
+***Dodaj usuwanie samochodów*** - zrobione
+***Dodaj aktualizaowanie samochodów*** - zrobione
 
 FINAL
 jesli projekt nie bedzie na czerwono, sprawdz czy się buduje za pomocą mvn clean install w cmd
 
 
 MOJE TODO
-1.Podczas tworzenia samochodu, funkcja nie sprawdza jaki jest kolejny wolny ID tylko idzie z powrotem od 1
-2.Duplikuje samochody (jeden jest dodany do listy podczas tworzenia samochodu, a drugi podczas załadowania pliku)
-3.Zapisuje się tylko jeden samochód
+2.Duplikuje samochody (jeden jest dodany do listy podczas tworzenia samochodu, a drugi podczas załadowania pliku) - naprawione
+3.Zapisuje się tylko jeden samochód - naprawione
+4.Nie znajduje po manufacturer po zmianie z list na hashset - naprawione

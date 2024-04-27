@@ -2,6 +2,7 @@ package com.car.dealer;
 
 import com.car.dealer.facade.CarFacade;
 import com.car.dealer.model.Car;
+import com.car.dealer.model.CarList;
 import com.car.dealer.service.CarService;
 
 import java.util.Scanner;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 public class Demo {
 
     public static void main(String[] args) {
-        CarService.loadApplicationFile();
+        CarService.loadApplicationFile(CarList.listOfCars);
         Scanner scanner = new Scanner(System.in);
         int menu;
         do {
@@ -34,12 +35,14 @@ public class Demo {
                 case 3:
                     CarService.editCar(new Car());
                     break;
+                case 4:
+                    CarService.removeCar(new Car());
+                    break;
                 case 0:
                     System.out.println("\nSee you later!");
             }
         } while (menu != 0);
         scanner.close();
-
 
     }
 }

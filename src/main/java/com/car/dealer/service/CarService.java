@@ -1,21 +1,17 @@
 package com.car.dealer.service;
 
-import com.car.dealer.Demo;
 import com.car.dealer.model.Car;
 import com.car.dealer.common.Manufacturer;
 import com.car.dealer.validator.CarValidator;
-
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import static com.car.dealer.model.CarList.CarsList;
+import static com.car.dealer.model.CarList.listOfCars;
 
 
 public class CarService extends Car {
-    private final static AtomicInteger nextId = new AtomicInteger();
-    public static Car validateCar(Car car){
+    public static Car validateCar(Car car) {
         Car carValidate = new Car();
         Scanner scanner = new Scanner(System.in);
         CarValidator validator = new CarValidator();
@@ -33,73 +29,108 @@ public class CarService extends Car {
         return createCar(carValidate);
     }
 
-
-
-    public static Car createCar(Car car){
-        loadApplicationFile();
-        int i = 0;
-        i = nextId.incrementAndGet();
+    public static Car createCar(Car car) {
+        loadApplicationFile(listOfCars);
+        int i = loadLastId() + 1;
         Car newCar = Car.builder()
-                        .ID(i)
-                        .manufacturer(car.getManufacturer())
-                        .model(car.getModel())
-                        .engine(car.getEngine())
-                        .price(car.getPrice())
-                        .currency(car.getCurrency())
-                        .build();
-        CarsList.add(newCar);
+                .ID(i)
+                .manufacturer(car.getManufacturer())
+                .model(car.getModel())
+                .engine(car.getEngine())
+                .price(car.getPrice())
+                .currency(car.getCurrency())
+                .build();
+        listOfCars.add(newCar);
 
         System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
                 + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice() + " "
                 + car.getCurrency());
-        return saveApplicationFile(newCar);
+
+        saveApplicationFile(listOfCars);
+        saveLastId(i);
+        return newCar;
     }
 
-    public static Car saveApplicationFile(Car car){
-            try{
-                FileOutputStream fileOutputStream = new FileOutputStream("carDealer.data");
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(car);
-                objectOutputStream.flush();
-                objectOutputStream.close();
-            }catch (IOException ioe){
-                System.err.println("Error saving to file");
+    private static int loadLastId() {
+        int lastId = 0;
+        try {
+            FileInputStream fileInputStream = new FileInputStream("lastId.data");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            lastId = (int) objectInputStream.readObject();
+            objectInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error " + e.getMessage());
+        }
+        return lastId;
+    }
+
+    private static void saveLastId(int lastId) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream("lastId.data");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(lastId);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } catch (IOException e) {
+            System.out.println("Error " + e.getMessage());
+        }
+    }
+
+    private static HashSet<Car> saveApplicationFile(HashSet<Car> car) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream("carDealer.data");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            for (Car x : listOfCars) {
+                objectOutputStream.writeObject(x);
             }
-            return car;
+            objectOutputStream.flush();
+            objectOutputStream.close();
+        } catch (IOException ioe) {
+            System.err.println("Error saving to file");
+        }
+        return loadApplicationFile(listOfCars);
     }
 
-    public static Car loadApplicationFile(){
-        Car loadedCar = null;
-        try{
+    public static HashSet<Car> loadApplicationFile(HashSet<Car> list) {
+        List<Car> loadedCar = null;
+        try {
             FileInputStream fileInputStream = new FileInputStream("carDealer.data");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            loadedCar = (Car) objectInputStream.readObject();
-            CarsList.add(loadedCar);
+            while (fileInputStream.available() > 0) {
+                Car car = (Car) objectInputStream.readObject();
+                listOfCars.add(car);
+            }
             objectInputStream.close();
-        }catch (IOException | ClassNotFoundException ioe){
-            System.err.println("Error saving to file " + ioe.getMessage());
+        } catch (IOException | ClassNotFoundException | NullPointerException ioe) {
+            System.err.println("Error loading file " + ioe.getMessage());
         }
-        return loadedCar;
+        return list;
     }
 
-    public static Manufacturer selectedManufacturer() {
+    private static Manufacturer selectedManufacturer() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Provide manufacturer name: ");
         String filterManufacturer = scanner.next().toUpperCase();
-        Manufacturer manufacturer = Manufacturer.valueOf(filterManufacturer);
-        return manufacturer;
+        return Manufacturer.valueOf(filterManufacturer);
     }
 
     public static Car findByManufacturer(Car car) {
-        CarsList.stream()
-                .filter(x -> x.getManufacturer().equals(selectedManufacturer()))
-                .forEach(e -> System.out.println("ID: " + e.getID() + " " + "Model: " + e.getModel() + " " +
-                        "Engine: " + e.getEngine() + " " + "Price: " + e.getPrice() + " " + e.getCurrency()));
-                return car;
+        Manufacturer manufacturer = selectedManufacturer();
+        for (Car e : listOfCars) {
+            if (e.getManufacturer().equals(manufacturer)) {
+                System.out.println("ID: " + e.getID() + " " + "Model: " + e.getModel() + " " +
+                        "Engine: " + e.getEngine() + " " + "Price: " + e.getPrice() + " " + e.getCurrency());
+            }
+        }
+//        listOfCars.stream()        //dlaczego to nie działa? a na foreach juz tak
+//                .filter(x -> x.getManufacturer().equals(selectedManufacturer()))
+//                .forEach(e -> System.out.println("ID: " + e.getID() + " " + "Model: " + e.getModel() + " " +
+//                        "Engine: " + e.getEngine() + " " + "Price: " + e.getPrice() + " " + e.getCurrency()));
+        return car;
     }
 
     public static Car showAllCars(Car car) {
-        CarsList.forEach(x -> System.out.println("ID: " + x.getID() + " | " + "Manufacturer: " +
+        listOfCars.forEach(x -> System.out.println("ID: " + x.getID() + " | " + "Manufacturer: " +
                 x.getManufacturer() + " | " + "Model: " + x.getModel() + " | " + "Engine: " + x.getEngine() +
                 " | " + "Price: " + x.getPrice() + " " + x.getCurrency()));
         return car;
@@ -111,7 +142,7 @@ public class CarService extends Car {
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = CarsList.stream()
+        Car selectedCarObject = listOfCars.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
                 .orElse(null);
@@ -126,7 +157,7 @@ public class CarService extends Car {
 
     }
 
-    public static Car checkLoanPrice(Car car){
+    private static Car checkLoanPrice(Car car) {
         BigDecimal year = new BigDecimal("12");
         BigDecimal percent = new BigDecimal("0.15");
         BigDecimal yearCost = car.getPrice().divide(year, 2, RoundingMode.HALF_UP);
@@ -141,7 +172,7 @@ public class CarService extends Car {
         return car;
     }
 
-    public static Car editCar(Car car){
+    public static HashSet<Car> editCar(Car car) {
         Scanner scanner = new Scanner(System.in);
 
         CarService.showAllCars(new Car());
@@ -152,66 +183,84 @@ public class CarService extends Car {
         System.out.println("Provide ID of car to edit");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = CarsList.stream()
+        Car selectedCarObject = listOfCars.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
                 .orElse(null);
 
-        do{
+        do {
 
-        System.out.println("What you want to change?\n" +
-                "1.Manufacuter\n" + "2.Model\n" + "3.Engine\n" + "4.Price\n" + "5.Currency\n" + "0.Back to home page");
-        menu = scanner.nextInt();
-        switch (menu){
+            System.out.println("What you want to change?\n" +
+                    "1.Manufacuter\n" + "2.Model\n" + "3.Engine\n" + "4.Price\n" + "5.Currency\n" + "0.Back to home page");
+            menu = scanner.nextInt();
+            switch (menu) {
 
-            case 1:
-                System.out.println("Provide new manufacutrer for selected car: ");
-                selectedCarObject.setManufacturer(validator.validateManufacturer(selectedCarObject.getManufacturer()));
-                System.out.println("Change has been saved");
-                System.out.println("\n");
-                break;
+                case 1:
+                    System.out.println("Provide new manufacutrer for selected car: ");
+                    selectedCarObject.setManufacturer(validator.validateManufacturer(selectedCarObject.getManufacturer()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                    break;
 
-            case 2:
-                System.out.println("Provide new model for selected car: ");
-                String editModel = scanner.next();
-                selectedCarObject.setModel(editModel);
-                System.out.println("Change has been saved");
-                System.out.println("\n");
-                break;
+                case 2:
+                    System.out.println("Provide new model for selected car: ");
+                    String editModel = scanner.next();
+                    selectedCarObject.setModel(editModel);
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                    break;
 
-            case 3:
-                System.out.println("Provide new engine for selected car: ");
-                selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
-                System.out.println("Change has been saved");
-                System.out.println("\n");
-                break;
-            case 4:
-                System.out.println("Provide new price for selected car: ");
-                selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
-                System.out.println("Change has been saved");
-                System.out.println("\n");
-                break;
-            case 5:
-                System.out.println("Provide new currency for selected car: ");
-                selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
-                System.out.println("Change has been saved");
-                System.out.println("\n");
-                break;
+                case 3:
+                    System.out.println("Provide new engine for selected car: ");
+                    selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                    break;
+                case 4:
+                    System.out.println("Provide new price for selected car: ");
+                    selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                    break;
+                case 5:
+                    System.out.println("Provide new currency for selected car: ");
+                    selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                    break;
 
-            case 0:
-                System.out.println("Back to home page");
-                break;
+                case 0:
+                    System.out.println("Back to home page");
+                    break;
             }
-        }while (menu != 0);
+        } while (menu != 0);
 
-     return saveApplicationFile(selectedCarObject);
+        return saveApplicationFile(listOfCars);
 
     }
 
-    public static Car carRemove(Car car){
+    public static HashSet<Car> removeCar(Car car) {
         CarService.showAllCars(new Car());
+        Scanner scanner = new Scanner(System.in);
 
-        return car;
+        System.out.println("Provide ID of car to remove");
+        int selectedCar = scanner.nextInt();
+
+        Iterator<Car> iterator = listOfCars.iterator();
+        while (iterator.hasNext()) {
+
+            Car carIterator = iterator.next();
+            if (carIterator.getID().equals(selectedCar)) {
+                iterator.remove();
+                carIterator.setID(null);
+                carIterator.setManufacturer(null);
+                carIterator.setModel(null);
+                carIterator.setEngine(null);
+                carIterator.setPrice(null);
+                carIterator.setCurrency(null);
+            }
+        }
+        return saveApplicationFile(listOfCars);
     }
-
 }
+
