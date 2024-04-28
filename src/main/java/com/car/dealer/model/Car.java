@@ -1,6 +1,7 @@
 package com.car.dealer.model;
 
 import com.car.dealer.common.Currency;
+import com.car.dealer.common.Fuel;
 import com.car.dealer.common.Manufacturer;
 import lombok.*;
 
@@ -16,6 +17,7 @@ public class Car implements Serializable {
     private Manufacturer manufacturer;
     private String model;
     private BigDecimal engine;
+    private Fuel fuel;
     private BigDecimal price;
     private Currency currency;
 }

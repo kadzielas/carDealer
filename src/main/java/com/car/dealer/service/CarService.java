@@ -22,6 +22,8 @@ public class CarService extends Car {
         carValidate.setModel(scanner.next());
         System.out.print("Provide engine: ");
         carValidate.setEngine(validator.validateEngine(carValidate.getEngine()));
+        System.out.println("Provide type of fuel: ");
+        carValidate.setFuel(validator.validateFuel(carValidate.getFuel()));
         System.out.print("Provide price: ");
         carValidate.setPrice(validator.validatePrice(carValidate.getPrice()));
         System.out.println("Provide currency: ");
@@ -37,13 +39,14 @@ public class CarService extends Car {
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
                 .engine(car.getEngine())
+                .fuel(car.getFuel())
                 .price(car.getPrice())
                 .currency(car.getCurrency())
                 .build();
         listOfCars.add(newCar);
 
         System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
-                + " " + "\nEngine: " + car.getEngine() + " " + "\nPrice: " + car.getPrice() + " "
+                + " " + "\nEngine: " + car.getEngine() + " " + car.getFuel() + " " + "\nPrice: " + car.getPrice() + " "
                 + car.getCurrency());
 
         saveApplicationFile(listOfCars);
@@ -119,7 +122,7 @@ public class CarService extends Car {
         for (Car e : listOfCars) {
             if (e.getManufacturer().equals(manufacturer)) {
                 System.out.println("ID: " + e.getID() + " " + "Model: " + e.getModel() + " " +
-                        "Engine: " + e.getEngine() + " " + "Price: " + e.getPrice() + " " + e.getCurrency());
+                        "Engine: " + e.getEngine() + " " + e.getFuel() +  " " + "Price: " + e.getPrice() + " " + e.getCurrency());
             }
         }
 //        listOfCars.stream()        //dlaczego to nie działa? a na foreach juz tak
@@ -132,7 +135,7 @@ public class CarService extends Car {
     public static Car showAllCars(Car car) {
         listOfCars.forEach(x -> System.out.println("ID: " + x.getID() + " | " + "Manufacturer: " +
                 x.getManufacturer() + " | " + "Model: " + x.getModel() + " | " + "Engine: " + x.getEngine() +
-                " | " + "Price: " + x.getPrice() + " " + x.getCurrency()));
+                " " + x.getFuel() + " | " + "Price: " + x.getPrice() + " " + x.getCurrency()));
         return car;
     }
 
@@ -149,9 +152,10 @@ public class CarService extends Car {
 
         if (selectedCarObject != null) {
 
-            System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() + " | "
-                    + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " + selectedCarObject.getEngine() + " | "
-                    + "Price: " + selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
+            System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() +
+                    " | " + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " +
+                    selectedCarObject.getEngine() + " " + car.getFuel() +  " | " + "Price: " +
+                    selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
         }
         return checkLoanPrice(selectedCarObject);
 
@@ -191,7 +195,7 @@ public class CarService extends Car {
         do {
 
             System.out.println("What you want to change?\n" +
-                    "1.Manufacuter\n" + "2.Model\n" + "3.Engine\n" + "4.Price\n" + "5.Currency\n" + "0.Back to home page");
+                    "1.Manufacuter\n" + "2.Model\n" + "3.Engine\n" + "4.Fuel" + "5.Price\n" + "6.Currency\n" + "0.Back to home page");
             menu = scanner.nextInt();
             switch (menu) {
 
@@ -201,7 +205,6 @@ public class CarService extends Car {
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                     break;
-
                 case 2:
                     System.out.println("Provide new model for selected car: ");
                     String editModel = scanner.next();
@@ -216,13 +219,19 @@ public class CarService extends Car {
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                     break;
-                case 4:
+                case  4:
+                System.out.println("Provide new type of fuel for selected car: ");
+                selectedCarObject.setFuel(validator.validateFuel(selectedCarObject.getFuel()));
+                System.out.println("Change has been saved");
+                System.out.println("\n");
+                    break;
+                case 5:
                     System.out.println("Provide new price for selected car: ");
                     selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                     break;
-                case 5:
+                case 6:
                     System.out.println("Provide new currency for selected car: ");
                     selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
                     System.out.println("Change has been saved");

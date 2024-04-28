@@ -1,5 +1,6 @@
 package com.car.dealer.validator;
 import com.car.dealer.common.Currency;
+import com.car.dealer.common.Fuel;
 import com.car.dealer.common.Manufacturer;
 
 import java.math.BigDecimal;
@@ -45,6 +46,20 @@ public class CarValidator {
             }
         } while (true);
         return manufacturer;
+    }
+
+    public Fuel validateFuel(Fuel fuel) {
+        do {
+            Scanner scanner = new Scanner(System.in);
+            try {
+                String fuelInput = scanner.nextLine().toUpperCase();
+                fuel = Fuel.valueOf(fuelInput);
+                break;
+            } catch (IllegalArgumentException e) {
+                System.out.println("Please provide correct manufacturer: ");
+            }
+        } while (true);
+        return fuel;
     }
 
     public BigDecimal validatePrice(BigDecimal price) {
