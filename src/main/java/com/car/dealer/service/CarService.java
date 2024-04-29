@@ -36,7 +36,7 @@ public class CarService extends Car {
     public static Car createCar(Car car) {
         loadApplicationFile(listOfCars);
         int i = loadLastId() + 1;
-        Car newCar = Car.builder()
+        Car newCar = Car.builder()//todo co to jest i
                 .ID(i)
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
