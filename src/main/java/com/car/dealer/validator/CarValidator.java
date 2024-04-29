@@ -1,4 +1,5 @@
 package com.car.dealer.validator;
+
 import com.car.dealer.common.Currency;
 import com.car.dealer.common.Fuel;
 import com.car.dealer.common.Manufacturer;
@@ -10,7 +11,7 @@ import java.util.function.Predicate;
 
 public class CarValidator {
 
-    public Predicate<BigDecimal> confirmValid(BigDecimal price2) {
+    public Predicate<BigDecimal> confirmValid(BigDecimal price2) { //todo nie uzywane
         BigDecimal price = new BigDecimal("0");
         Predicate<BigDecimal> carPredicate = car -> price2.equals(price);
         if (!price2.equals(price)) {
@@ -31,7 +32,8 @@ public class CarValidator {
             } catch (IllegalArgumentException e) {
                 System.out.println("Please provide correct currency: ");
             }
-        } while (true); return currency;
+        } while (true);
+        return currency;
     }
 
     public Manufacturer validateManufacturer(Manufacturer manufacturer) {
@@ -56,7 +58,7 @@ public class CarValidator {
                 fuel = Fuel.valueOf(fuelInput);
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("Please provide correct manufacturer: ");
+                System.out.println("Please provide correct manufacturer: "); //manufacturer?
             }
         } while (true);
         return fuel;
@@ -70,10 +72,12 @@ public class CarValidator {
                 if (isBiggerThanZero(priceInput)) price = priceInput;
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Please provide correct value:");
+                System.out.println("Please provide correct value:");// todo albo trzymamy sie koncepcji komentarzy jak przy
+                // manufacturer fuel i currency, albo tak jak przy price i engine, zastanow sie na temat komunikatow
                 scanner.next();
             }
-        } while (true); return price;
+        } while (true);
+        return price;
     }
 
     public BigDecimal validateEngine(BigDecimal engine) {
@@ -85,10 +89,11 @@ public class CarValidator {
                 break;
 
             } catch (InputMismatchException e) {
-                System.out.println("Please provide correct value:");
+                System.out.println("Please provide correct value:");//todo same here
                 scanner.next();
             }
-        } while (true); return engine;
+        } while (true);
+        return engine;
     }
 
     private Boolean isBiggerThanZero(BigDecimal firstValue) {

@@ -11,6 +11,9 @@
 7. Przenies tworzenie danych testowych w jakies sensowne miejsce, tak aby nie robiły bałaganu - zrobione
 8. Ustaw zmienne na prywatne i polegaj na getterach, bo w niektórych klasach używasz np. car.currency - zrobione
 9. pomysl jak wyjebac te listy - zrobione
+10. TODO zrob konfiguracje projektu zeby dalo sie to odpalic z dowolnego pliku na jakim jestes, anie specjalnie do demo trzeba przechodzic
+11. TODO obczaj sobie jak dziala w intelij galaz git -> show git log, masz historie co zmienialem jak bylo przed i potem po
+12. przenies pliki .data z samochodami to resourcow i obsluz ludzki format bo aktualnie nie jestem w stanie ich odczytac
 
 ***ad.7 jako bonusowe za tequilke ja stawiam jak przeniesiesz wczytywanie danych testowych z pliku txt*** - zrobione
 ***Na koneic dziala programu zapisuj aktualną listę samochodów*** - zrobione
