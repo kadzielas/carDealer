@@ -15,14 +15,9 @@ public class Demo {
         Scanner scanner = new Scanner(System.in);
         int menu;
         do {
-            System.out.println("\nMAIN MENU\n");
-            System.out.println("1.Buy car");
-            System.out.println("2.Add new car");
-            System.out.println("3.Edit car");
-            System.out.println("4.Remove car");
-            System.out.println("0.Exit\n");
+            System.out.println("\nMAIN MENU\n" + "1.Buy car\n" + "2.Add new car\n" + "3.Edit car\n" +
+                    "4.Remove car\n" + "0.Exit\n" + "\nWhere are we going?: ");
 
-            System.out.print("Where are we going?: ");
             menu = scanner.nextInt();
 
             switch (menu) {
@@ -30,13 +25,13 @@ public class Demo {
                     CarFacade.CarList();
                     break;
                 case 2:
-                    CarService.validateCar(new Car());
+                    CarService.validateCar();
                     break;
                 case 3:
-                    CarService.editCar(new Car());
+                    CarService.editCar();
                     break;
                 case 4:
-                    CarService.removeCar(new Car());
+                    CarService.removeCar();
                     break;
                 case 0:
                     System.out.println("\nSee you later!");

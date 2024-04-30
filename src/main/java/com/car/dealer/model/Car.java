@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Builder
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class Car implements Serializable { //todo czemu serializable?
+public class Car implements Serializable {
     private Integer ID;
     private Manufacturer manufacturer;
     private String model;

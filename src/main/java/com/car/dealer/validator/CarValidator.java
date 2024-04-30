@@ -36,7 +36,8 @@ public class CarValidator {
         return currency;
     }
 
-    public Manufacturer validateManufacturer(Manufacturer manufacturer) {
+    public Manufacturer validateManufacturer() {
+        Manufacturer manufacturer;
         do {
             Scanner scanner = new Scanner(System.in);
             try {
@@ -49,6 +50,7 @@ public class CarValidator {
         } while (true);
         return manufacturer;
     }
+
 
     public Fuel validateFuel(Fuel fuel) {
         do {

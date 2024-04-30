@@ -1,30 +1,9 @@
-1. Popraw nazewnictwo metod bo są nieczytelnie np TESTVALID - zrobione
-2. Klasa CarValidator służy wyłącznie do walidacji pól, nie do tworzenia, musisz przenieść imeplementacje tworzenia auta do serwisu :) - zrobione
-    a) pobierz dane na biężaco od usera - zrobione
-    b) waliduj je na biężąco póki użytkownik nie wprowadzi wymaganych przez Ciebie danych - zrobione
-    c) jesli wszystko bedzie ok, przekaż prawidłowe dane do stworzenia nowego obiektu (Car) - zrobione
-    d) twórz obiekty za pomocą buildera - zrobione
-3. Mając teraz ładnie nazwane klasy i podzielone na pakiety, pomysl o tym czy aktualnie dziedziczenia jest okej - zrobione
-4. Przemysl aktualnie zrobione voidy, czy mogłyby zwrócić konkretny obiekt zamiast pustego stanu void - zrobione
-5. CarBuilder klasa jest do wyjebania i zmergować ją trzeba do serwisu - zrobione
-6. przejrzyj adnotacje na klasach bo jest bałagan np. @Getter itd - zrobione
-7. Przenies tworzenie danych testowych w jakies sensowne miejsce, tak aby nie robiły bałaganu - zrobione
-8. Ustaw zmienne na prywatne i polegaj na getterach, bo w niektórych klasach używasz np. car.currency - zrobione
-9. pomysl jak wyjebac te listy - zrobione
-10. TODO zrob konfiguracje projektu zeby dalo sie to odpalic z dowolnego pliku na jakim jestes, anie specjalnie do demo trzeba przechodzic
+
 11. TODO obczaj sobie jak dziala w intelij galaz git -> show git log, masz historie co zmienialem jak bylo przed i potem po
 12. przenies pliki .data z samochodami to resourcow i obsluz ludzki format bo aktualnie nie jestem w stanie ich odczytac
 
-***ad.7 jako bonusowe za tequilke ja stawiam jak przeniesiesz wczytywanie danych testowych z pliku txt*** - zrobione
-***Na koneic dziala programu zapisuj aktualną listę samochodów*** - zrobione
-***Dodaj usuwanie samochodów*** - zrobione
-***Dodaj aktualizaowanie samochodów*** - zrobione
 
-FINAL
-jesli projekt nie bedzie na czerwono, sprawdz czy się buduje za pomocą mvn clean install w cmd
 
 
 MOJE TODO
-2.Duplikuje samochody (jeden jest dodany do listy podczas tworzenia samochodu, a drugi podczas załadowania pliku) - naprawione
-3.Zapisuje się tylko jeden samochód - naprawione
-4.Nie znajduje po manufacturer po zmianie z list na hashset - naprawione
+
