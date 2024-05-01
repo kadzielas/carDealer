@@ -1,21 +1,20 @@
 package com.car.dealer.service;
 
-import com.car.dealer.model.Car;
 import com.car.dealer.common.Manufacturer;
+import com.car.dealer.model.Car;
+import com.car.dealer.model.CarList;
 import com.car.dealer.validator.CarValidator;
 
-import java.io.*; //todo staraj sie nie importowac calych bibliotek tylko te klasy ktore potrzebuejsz
-// skonfiguruj sobie intelija tak zeby importowal ci tylko te klasy ktore potrzebujesz a nie cale biblioteki ;)
-import java.math.*;
+import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
-
-import static com.car.dealer.model.CarList.listOfCars;
 
 
 public class CarService {
-    public static Car validateCar() { //todo wyjeb static
+
+    public Car validateCar() {
         Car carValidate = new Car();
-        //List<Car> test = listOfCars;
+
         Scanner scanner = new Scanner(System.in);
         CarValidator validator = new CarValidator();
 
@@ -34,8 +33,8 @@ public class CarService {
         return createCar(carValidate);
     }
 
-    public static Car createCar(Car car) {  //todo wyjeb static
-        loadApplicationFile(listOfCars);
+    private Car createCar(Car car) {
+        loadApplicationFile();
         Car newCar = Car.builder()
                 .ID(loadLastId() + 1)
                 .manufacturer(car.getManufacturer())
@@ -45,7 +44,7 @@ public class CarService {
                 .price(car.getPrice())
                 .currency(car.getCurrency())
                 .build();
-        listOfCars.add(newCar);
+        CarList.listForCarService.add(newCar);
 
         System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
                 + " " + "\nEngine: " + car.getEngine() + " " + car.getFuel() + " " + "\nPrice: " + car.getPrice() + " "
@@ -59,7 +58,7 @@ public class CarService {
     private static int loadLastId() {
         int lastId = 0;
         try {
-            FileInputStream fileInputStream = new FileInputStream("lastId.data");
+            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\lastId.txt");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             lastId = (int) objectInputStream.readObject();
             objectInputStream.close();
@@ -71,7 +70,7 @@ public class CarService {
 
     private static void saveLastId(int lastId) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("lastId.data");
+            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\lastId.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(lastId);
             objectOutputStream.flush();
@@ -83,9 +82,9 @@ public class CarService {
 
     private static HashSet<Car> saveApplicationFile() {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream("carDealer.data");
+            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Car x : listOfCars) {
+            for (Car x : CarList.listForCarService) {
                 objectOutputStream.writeObject(x);
             }
             objectOutputStream.flush();
@@ -93,34 +92,32 @@ public class CarService {
         } catch (IOException ioe) {
             System.err.println("Error saving to file");
         }
-        return loadApplicationFile(listOfCars);
+        return CarList.listForCarService;
     }
 
-    public static HashSet<Car> loadApplicationFile(HashSet<Car> list) { //todo wyjeb liste
-        //todo loaded to moge byc ja a nie ta zmienna, ona jest nie uzywana X
+    public static HashSet<Car> loadApplicationFile() {
         try {
-            FileInputStream fileInputStream = new FileInputStream("carDealer.data");
+            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\carDealer.txt");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             while (fileInputStream.available() > 0) {
                 Car car = (Car) objectInputStream.readObject();
-                listOfCars.add(car);
+                CarList.listForCarService.add(car);
             }
             objectInputStream.close();
         } catch (Exception ex) {
             System.err.println("Error loading file " + ex.getMessage());
         }
-        return listOfCars;
+        return CarList.listForCarService;
     }
 
 
-    public static void findByManufacturer() {
-        //todo dlaczego static? chcesz zeby ta metoda ciagle trzymala ci wyszukana wartosc?
+    public void findByManufacturer() {
 
         System.out.println("Provide manufacturer name: ");
         CarValidator validator = new CarValidator();
         Manufacturer manufacturer = validator.validateManufacturer();
 
-        for (Car selectedManufacturer : listOfCars) { //todo co to jest e? nazwj to ladniej X
+        for (Car selectedManufacturer : CarList.listForCarService) {
             if (selectedManufacturer.getManufacturer().equals(manufacturer)) {
                 System.out.println("ID: " + selectedManufacturer.getID() + " " + "Model: " +
                         selectedManufacturer.getModel() + " " + "Engine: " + selectedManufacturer.getEngine() +
@@ -131,23 +128,22 @@ public class CarService {
 
     }
 
-    public static void showAllCars() {
-        listOfCars.forEach(x -> System.out.println("ID: " + x.getID() + " | " + "Manufacturer: " +
-                x.getManufacturer() + " | " + "Model: " + x.getModel() + " | " + "Engine: " + x.getEngine() +
-                " " + x.getFuel() + " | " + "Price: " + x.getPrice() + " " + x.getCurrency()));
-        //todo dlaczego static? chcesz zeby ta metoda ciagle trzymala ci wyszukana wartosc?
-        //todo popraw X kurwo
+    public void showAllCars() {
+        List<Car> sortedListOfCars = new ArrayList<>(CarList.listForCarService);
+        sortedListOfCars.sort(Comparator.comparingInt(Car::getID));
 
+        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getID() + " | " + "Manufacturer: " +
+                sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | " + "Engine: " + sortedCars.getEngine() +
+                " " + sortedCars.getFuel() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
-    public static void selectCarToPrediction() {
-        //** dlaczego static? chcesz zeby ta metoda ciagle trzymala ci wyszukana wartosc?
+    public void selectCarToPrediction() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = listOfCars.stream()
+        Car selectedCarObject = CarList.listForCarService.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
                 .orElse(null);//todo jest tu ryzyko zwrócenia nulla, intelij to podswietla, musisz przemyslec strukture tego streama
@@ -179,10 +175,11 @@ public class CarService {
         return car;
     }
 
-    public static HashSet<Car> editCar() {
+    public HashSet<Car> editCar() {
         Scanner scanner = new Scanner(System.in);
+        CarService availableCarsToEdit = new CarService();
+        availableCarsToEdit.showAllCars();
 
-        CarService.showAllCars();
         CarValidator validator = new CarValidator();
 
         int menu;
@@ -190,7 +187,7 @@ public class CarService {
         System.out.println("Provide ID of car to edit");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = listOfCars.stream()
+        Car selectedCarObject = CarList.listForCarService.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
                 .orElse(null);//TODO selectedCarObject moze byc nullem, nie zabepieczyles sie przed tym
@@ -246,14 +243,15 @@ public class CarService {
 
     }
 
-    public static HashSet<Car> removeCar() { //todo argument nie jest uzywany!!
-        CarService.showAllCars();
+    public HashSet<Car> removeCar() {
+        CarService availableCarsToRemove = new CarService();
+        availableCarsToRemove.showAllCars();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Provide ID of car to remove");
         int selectedCar = scanner.nextInt();
 
-        Iterator<Car> iterator = listOfCars.iterator();
+        Iterator<Car> iterator = CarList.listForCarService.iterator();
         while (iterator.hasNext()) {
 
             Car carIterator = iterator.next();

@@ -60,7 +60,7 @@ public class CarValidator {
                 fuel = Fuel.valueOf(fuelInput);
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("Please provide correct manufacturer: "); //manufacturer?
+                System.out.println("Please provide correct type of fuel: ");
             }
         } while (true);
         return fuel;
@@ -74,8 +74,7 @@ public class CarValidator {
                 if (isBiggerThanZero(priceInput)) price = priceInput;
                 break;
             } catch (InputMismatchException e) {
-                System.out.println("Please provide correct value:");// todo albo trzymamy sie koncepcji komentarzy jak przy
-                // manufacturer fuel i currency, albo tak jak przy price i engine, zastanow sie na temat komunikatow
+                System.out.println("Please provide correct value of price:");
                 scanner.next();
             }
         } while (true);
@@ -91,7 +90,7 @@ public class CarValidator {
                 break;
 
             } catch (InputMismatchException e) {
-                System.out.println("Please provide correct value:");//todo same here
+                System.out.println("Please provide correct value of engine:");
                 scanner.next();
             }
         } while (true);
