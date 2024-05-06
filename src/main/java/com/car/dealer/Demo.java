@@ -13,8 +13,14 @@ public class Demo {
         Scanner scanner = new Scanner(System.in);
         int menu;
         do {
-            System.out.println("\nMAIN MENU\n" + "1.Buy car\n" + "2.Add new car\n" + "3.Edit car\n" +
-                    "4.Remove car\n" + "0.Exit\n" + "\nWhere are we going?: ");
+            System.out.println("""
+                    Home page
+                    \n1.Buy car
+                    2.Add new car
+                    3.Edit car
+                    4.Remove car
+                    0.Exit
+                    \nWhere are we going?:""");
 
             menu = scanner.nextInt();
 

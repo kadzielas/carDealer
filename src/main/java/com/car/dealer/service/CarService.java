@@ -3,6 +3,7 @@ package com.car.dealer.service;
 import com.car.dealer.common.Manufacturer;
 import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
+import com.car.dealer.model.Loan;
 import com.car.dealer.validator.CarValidator;
 
 import java.io.*;
@@ -137,7 +138,7 @@ public class CarService {
                 " " + sortedCars.getFuel() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
-    public void selectCarToPrediction() {
+    public Car selectCarToPrediction() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
@@ -146,7 +147,7 @@ public class CarService {
         Car selectedCarObject = CarList.listForCarService.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
-                .orElse(null);//todo jest tu ryzyko zwrócenia nulla, intelij to podswietla, musisz przemyslec strukture tego streama
+                .orElse(null);
 
         if (selectedCarObject != null) {
 
@@ -154,17 +155,22 @@ public class CarService {
                     " | " + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " +
                     selectedCarObject.getEngine() + " " + selectedCarObject.getFuel() + " | " + "Price: " +
                     selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
+            checkLoanPrice(selectedCarObject);
+
+        } else {
+            System.out.println("Can not find car");
         }
-        //todo przywróc żeby zwracał obiekt do checkLoanPrice
+
+        return selectedCarObject;
+
     }
 
-    private static Car checkLoanPrice(Car car) {//tutaj moim zdaniem lepiej byloby miec oddzielny obiekt Loan, z tymi zmiennymi, niz wolac caly obiekt car
+    private void checkLoanPrice(Car car){//tutaj moim zdaniem lepiej byloby miec oddzielny obiekt Loan, z tymi zmiennymi, niz wolac caly obiekt car
         //wrzuciłbym samo car.getPrice(),zamiast ladowac caly obiekt niepotrzebnie, optymalizacja kochanie i tu tez moze byc void, bo nie zwracasz modyfikowane
         // w zaden sposob obiektu car, wiec wrzucaj tylko potrzebne do metody rzeczy
-        BigDecimal year = new BigDecimal("12");
-        BigDecimal percent = new BigDecimal("0.15");
-        BigDecimal yearCost = car.getPrice().divide(year, 2, BigDecimal.ROUND_UP);
-        BigDecimal totalCost = yearCost.multiply(percent);
+        Loan loan = new Loan();
+        BigDecimal yearCost = selectCarToPrediction().getPrice().divide(loan.getYear(), 2, BigDecimal.ROUND_UP);
+        BigDecimal totalCost = yearCost.multiply(loan.getPercent());
         BigDecimal totalOneYear = yearCost.add(totalCost).setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal totalTwoYeras = totalOneYear.divide(BigDecimal.valueOf(2), 2, BigDecimal.ROUND_HALF_UP);
         BigDecimal totalThreeYeras = totalOneYear.divide(BigDecimal.valueOf(3), 2, BigDecimal.ROUND_HALF_UP);
@@ -172,7 +178,7 @@ public class CarService {
         System.out.println("One year loan cost per month: " + totalOneYear + " " + car.getCurrency() +
                 "\nTwo years loan cost per month: " + totalTwoYeras + " " + car.getCurrency() +
                 "\nThree years loan cost per month: " + totalThreeYeras + " " + car.getCurrency());
-        return car;
+
     }
 
     public HashSet<Car> editCar() {
@@ -190,54 +196,64 @@ public class CarService {
         Car selectedCarObject = CarList.listForCarService.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
-                .orElse(null);//TODO selectedCarObject moze byc nullem, nie zabepieczyles sie przed tym
+                .orElse(null);
 
-        do {
-            System.out.println("What you want to change?\n" +
-                    "1.Manufacuter\n" + "2.Model\n" + "3.Engine\n" + "4.Fuel\n" + "5.Price\n" + "6.Currency\n" +
-                    "0.Back to home page");
-            menu = scanner.nextInt();
-            switch (menu) {
-                case 1 -> {
-                    System.out.println("Provide new manufacutrer for selected car: ");
-                    selectedCarObject.setManufacturer(validator.validateManufacturer());
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
+        if(selectedCarObject != null) {
+            do {
+                System.out.println("""
+                        What you want to change?
+                        1.Manufacuter
+                        2.Model
+                        3.Engine
+                        4.Fuel
+                        5.Price
+                        6.Currency
+                        0.Back to home page""");
+                menu = scanner.nextInt();
+                switch (menu) {
+                    case 1 -> {
+                        System.out.println("Provide new manufacutrer for selected car: ");
+                        selectedCarObject.setManufacturer(validator.validateManufacturer());
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 2 -> {
+                        System.out.println("Provide new model for selected car: ");
+                        String editModel = scanner.next();
+                        selectedCarObject.setModel(editModel);
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 3 -> {
+                        System.out.println("Provide new engine for selected car: ");
+                        selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 4 -> {
+                        System.out.println("Provide new type of fuel for selected car: ");
+                        selectedCarObject.setFuel(validator.validateFuel(selectedCarObject.getFuel()));
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 5 -> {
+                        System.out.println("Provide new price for selected car: ");
+                        selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 6 -> {
+                        System.out.println("Provide new currency for selected car: ");
+                        selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
+                        System.out.println("Change has been saved");
+                        System.out.println("\n");
+                    }
+                    case 0 -> System.out.println("Back to home page");
                 }
-                case 2 -> {
-                    System.out.println("Provide new model for selected car: ");
-                    String editModel = scanner.next();
-                    selectedCarObject.setModel(editModel);
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
-                }
-                case 3 -> {
-                    System.out.println("Provide new engine for selected car: ");
-                    selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
-                }
-                case 4 -> {
-                    System.out.println("Provide new type of fuel for selected car: ");
-                    selectedCarObject.setFuel(validator.validateFuel(selectedCarObject.getFuel()));
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
-                }
-                case 5 -> {
-                    System.out.println("Provide new price for selected car: ");
-                    selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
-                }
-                case 6 -> {
-                    System.out.println("Provide new currency for selected car: ");
-                    selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
-                    System.out.println("Change has been saved");
-                    System.out.println("\n");
-                }
-                case 0 -> System.out.println("Back to home page");
-            }
-        } while (menu != 0);
+            } while (menu != 0);
+        } else {
+            System.out.println("Can not find car");
+        }
 
         return saveApplicationFile();
 

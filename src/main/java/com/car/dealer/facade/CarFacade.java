@@ -8,8 +8,12 @@ public class CarFacade {
         int menu;
 
         do {
-            System.out.println("1.Show list of available cars\n" + "2.Find cars by manufacturer\n" +
-                    "3.Check price on loan\n" + "0.Home page\n" + "\nWhere are we going?: ");
+            System.out.println("""
+                    1.Show list of available cars
+                    2.Find cars by manufacturer
+                    3.Check price on loan
+                    0.Home page
+                    \nWhere are we going?:""");
             menu = scanner.nextByte();
             System.out.println("\n");
 
