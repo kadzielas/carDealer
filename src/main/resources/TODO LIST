@@ -1,3 +1,3 @@
-
-
-
+TODO
+1. Plików txt nadal nie można podejrzeć pod względem zawartości - nie działają
+2. Widze, ze nie idą ci recordy, więc sugeruje zmienić record CarList, na prosta klasę modelową jak w przypadku Car

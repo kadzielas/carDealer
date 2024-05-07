@@ -93,7 +93,7 @@ public class CarService {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Car x : CarList.listForCarService) {
+            for (Car x : CarList.listForCarService) { //todo co to jest "x"
                 objectOutputStream.writeObject(x);
             }
             objectOutputStream.flush();
@@ -164,6 +164,7 @@ public class CarService {
     }
 
     private void checkLoanPrice(Car car){
+        //todo sprawdz klase loan
         Loan loan = new Loan();
         String timeLoanDate[] = loan.getLoanTime();
         BigDecimal yearCost = car.getPrice().divide(loan.getYear(), 2, BigDecimal.ROUND_UP);
@@ -191,13 +192,15 @@ public class CarService {
         Car selectedCarObject = CarList.listForCarService.stream()
                 .filter(x -> x.getID() == selectedCar)
                 .findFirst()
+//                .orElseThrow() //TODO zamiast zwracać nulla, który nic nie da użytkownikowi, proponuje wyrzucić coś tutaj, jakieś
+                //logowanie cokolwiek ;)
                 .orElse(null);
 
         if(selectedCarObject != null) {
             do {
                 System.out.println("""
                         What you want to change?
-                        1.Manufacuter
+                        1.Manufacturer
                         2.Model
                         3.Engine
                         4.Fuel
@@ -207,7 +210,7 @@ public class CarService {
                 menu = scanner.nextInt();
                 switch (menu) {
                     case 1 -> {
-                        System.out.println("Provide new manufacutrer for selected car: ");
+                        System.out.println("Provide new manufacturer for selected car: ");
                         selectedCarObject.setManufacturer(validator.validateManufacturer());
                         System.out.println("Change has been saved");
                         System.out.println("\n");
@@ -247,7 +250,7 @@ public class CarService {
                 }
             } while (menu != 0);
         } else {
-            System.out.println("Can not find car");
+            System.out.println("Can not find car"); //TODO zwrotna informacja nie jest czytelna względem tego co robi metoda
         }
 
         return saveApplicationFile();

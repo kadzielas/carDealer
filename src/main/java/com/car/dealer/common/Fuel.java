@@ -2,6 +2,6 @@ package com.car.dealer.common;
 
 public enum Fuel {
     LPG,
-    Diesel,
+    Diesel, //todo caps on pls
     PB
 }
