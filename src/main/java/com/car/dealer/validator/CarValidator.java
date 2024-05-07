@@ -7,20 +7,8 @@ import com.car.dealer.common.Manufacturer;
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 public class CarValidator {
-
-    public Predicate<BigDecimal> confirmValid(BigDecimal price2) { //todo nie uzywane
-        BigDecimal price = new BigDecimal("0");
-        Predicate<BigDecimal> carPredicate = car -> price2.equals(price);
-        if (!price2.equals(price)) {
-            return carPredicate;
-        } else {
-            System.out.println("False");
-        }
-        return carPredicate;
-    }
 
     public Currency validateCurrency(Currency currency) {
         do {

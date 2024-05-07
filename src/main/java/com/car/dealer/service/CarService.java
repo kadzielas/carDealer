@@ -5,10 +5,18 @@ import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
 import com.car.dealer.model.Loan;
 import com.car.dealer.validator.CarValidator;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Scanner;
 
 
 public class CarService {
@@ -138,47 +146,34 @@ public class CarService {
                 " " + sortedCars.getFuel() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
-    public Car selectCarToPrediction() {
+    public void selectCarToPrediction() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(x -> x.getID() == selectedCar)
-                .findFirst()
-                .orElse(null);
-
-        if (selectedCarObject != null) {
-
-            System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() +
-                    " | " + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " +
-                    selectedCarObject.getEngine() + " " + selectedCarObject.getFuel() + " | " + "Price: " +
-                    selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
-            checkLoanPrice(selectedCarObject);
-
-        } else {
-            System.out.println("Can not find car");
+        for (Car selectedCarObject : CarList.listForCarService) {
+            if (selectedCarObject.getID().equals(selectedCar)) {
+                System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() +
+                        " | " + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " +
+                        selectedCarObject.getEngine() + " " + selectedCarObject.getFuel() + " | " + "Price: " +
+                        selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
+                checkLoanPrice(selectedCarObject);
+            }
         }
-
-        return selectedCarObject;
-
     }
 
-    private void checkLoanPrice(Car car){//tutaj moim zdaniem lepiej byloby miec oddzielny obiekt Loan, z tymi zmiennymi, niz wolac caly obiekt car
-        //wrzuciłbym samo car.getPrice(),zamiast ladowac caly obiekt niepotrzebnie, optymalizacja kochanie i tu tez moze byc void, bo nie zwracasz modyfikowane
-        // w zaden sposob obiektu car, wiec wrzucaj tylko potrzebne do metody rzeczy
+    private void checkLoanPrice(Car car){
         Loan loan = new Loan();
-        BigDecimal yearCost = selectCarToPrediction().getPrice().divide(loan.getYear(), 2, BigDecimal.ROUND_UP);
-        BigDecimal totalCost = yearCost.multiply(loan.getPercent());
-        BigDecimal totalOneYear = yearCost.add(totalCost).setScale(2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal totalTwoYeras = totalOneYear.divide(BigDecimal.valueOf(2), 2, BigDecimal.ROUND_HALF_UP);
-        BigDecimal totalThreeYeras = totalOneYear.divide(BigDecimal.valueOf(3), 2, BigDecimal.ROUND_HALF_UP);
+        String timeLoanDate[] = loan.getLoanTime();
+        BigDecimal yearCost = car.getPrice().divide(loan.getYear(), 2, BigDecimal.ROUND_UP);
+        BigDecimal yearPercentPrice = yearCost.multiply(loan.getPercent());
+        BigDecimal totalOneYearPrice = yearCost.add(yearPercentPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        System.out.println("One year loan cost per month: " + totalOneYear + " " + car.getCurrency() +
-                "\nTwo years loan cost per month: " + totalTwoYeras + " " + car.getCurrency() +
-                "\nThree years loan cost per month: " + totalThreeYeras + " " + car.getCurrency());
-
+        for (int i = 1; i <= 3; i++){
+            BigDecimal resultPrice = totalOneYearPrice.divide(BigDecimal.valueOf(i), 2, BigDecimal.ROUND_HALF_UP);
+            System.out.println(timeLoanDate[i] + resultPrice + " " + car.getCurrency());
+        }
     }
 
     public HashSet<Car> editCar() {
