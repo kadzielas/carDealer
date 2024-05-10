@@ -23,22 +23,20 @@ public class CarService {
 
     public Car validateCar() {
         Car carValidate = new Car();
-
-        Scanner scanner = new Scanner(System.in);
         CarValidator validator = new CarValidator();
 
         System.out.println("Provide manufacturer: ");
         carValidate.setManufacturer(validator.validateManufacturer());
         System.out.print("Provide model: ");
-        carValidate.setModel(scanner.next());
+        carValidate.setModel(String.valueOf(validator.validateModel()));
         System.out.print("Provide engine: ");
         carValidate.setEngine(validator.validateEngine(carValidate.getEngine()));
         System.out.println("Provide type of fuel: ");
-        carValidate.setFuel(validator.validateFuel(carValidate.getFuel()));
+        carValidate.setFuel(validator.validateFuel());
         System.out.print("Provide price: ");
         carValidate.setPrice(validator.validatePrice(carValidate.getPrice()));
         System.out.println("Provide currency: ");
-        carValidate.setCurrency(validator.validateCurrency(carValidate.getCurrency()));
+        carValidate.setCurrency(validator.validateCurrency());
         return createCar(carValidate);
     }
 
@@ -93,8 +91,8 @@ public class CarService {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Car x : CarList.listForCarService) { //todo co to jest "x"
-                objectOutputStream.writeObject(x);
+            for (Car savedCars : CarList.listForCarService) {
+                objectOutputStream.writeObject(savedCars);
             }
             objectOutputStream.flush();
             objectOutputStream.close();
@@ -163,18 +161,31 @@ public class CarService {
         }
     }
 
-    private void checkLoanPrice(Car car){
-        //todo sprawdz klase loan
+    private Loan checkLoanPrice(Car car){
         Loan loan = new Loan();
-        String timeLoanDate[] = loan.getLoanTime();
-        BigDecimal yearCost = car.getPrice().divide(loan.getYear(), 2, BigDecimal.ROUND_UP);
-        BigDecimal yearPercentPrice = yearCost.multiply(loan.getPercent());
-        BigDecimal totalOneYearPrice = yearCost.add(yearPercentPrice).setScale(2, BigDecimal.ROUND_HALF_UP);
+        String[] loanTime = {"null", "One year price per month: ",
+                "Two years price per month: ",
+                "Three years price per month: ",
+                "Four years price per month: ",
+                "Five years price per month: "};
+        loan.setYear(new BigDecimal(12));
+        loan.setPercent(new BigDecimal("0.15"));
 
-        for (int i = 1; i <= 3; i++){
-            BigDecimal resultPrice = totalOneYearPrice.divide(BigDecimal.valueOf(i), 2, BigDecimal.ROUND_HALF_UP);
-            System.out.println(timeLoanDate[i] + resultPrice + " " + car.getCurrency());
+        loan.setYearCostWithoutPercent(new BigDecimal(String.valueOf(car.getPrice()
+                .divide(loan.getYear(), 2, BigDecimal.ROUND_HALF_UP))));
+        loan.setYearPercentPrice(loan.getYearCostWithoutPercent()
+                .multiply(loan.getPercent()));
+        loan.setTotalYearPrice(loan.getYearCostWithoutPercent()
+                .add(loan.getYearPercentPrice()
+                .setScale(2, BigDecimal.ROUND_HALF_UP)));
+
+
+        for (int i = 1; i <= 5; i++){
+            BigDecimal resultPrice = loan.getTotalYearPrice().
+                    divide(BigDecimal.valueOf(i), 2, BigDecimal.ROUND_HALF_UP);
+            System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
+        return loan;
     }
 
     public HashSet<Car> editCar() {
@@ -189,16 +200,13 @@ public class CarService {
         System.out.println("Provide ID of car to edit");
         int selectedCar = scanner.nextInt();
 
-        Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(x -> x.getID() == selectedCar)
-                .findFirst()
-//                .orElseThrow() //TODO zamiast zwracać nulla, który nic nie da użytkownikowi, proponuje wyrzucić coś tutaj, jakieś
-                //logowanie cokolwiek ;)
-                .orElse(null);
+        Iterator<Car> iterator = CarList.listForCarService.iterator();
+        while (iterator.hasNext()) {
 
-        if(selectedCarObject != null) {
-            do {
-                System.out.println("""
+            Car carIterator = iterator.next();
+            if (carIterator.getID().equals(selectedCar)) {
+                do {
+                    System.out.println("""
                         What you want to change?
                         1.Manufacturer
                         2.Model
@@ -207,54 +215,52 @@ public class CarService {
                         5.Price
                         6.Currency
                         0.Back to home page""");
-                menu = scanner.nextInt();
-                switch (menu) {
-                    case 1 -> {
-                        System.out.println("Provide new manufacturer for selected car: ");
-                        selectedCarObject.setManufacturer(validator.validateManufacturer());
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
+                    menu = scanner.nextInt();
+                    switch (menu) {
+                        case 1 -> {
+                            System.out.println("Provide new manufacturer for selected car: ");
+                            carIterator.setManufacturer(validator.validateManufacturer());
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 2 -> {
+                            System.out.println("Provide new model for selected car: ");
+                            String editModel = scanner.next();
+                            carIterator.setModel(editModel);
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 3 -> {
+                            System.out.println("Provide new engine for selected car: ");
+                            carIterator.setEngine(validator.validateEngine(carIterator.getEngine()));
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 4 -> {
+                            System.out.println("Provide new type of fuel for selected car: ");
+                            carIterator.setFuel(validator.validateFuel());
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 5 -> {
+                            System.out.println("Provide new price for selected car: ");
+                            carIterator.setPrice(validator.validatePrice(carIterator.getPrice()));
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 6 -> {
+                            System.out.println("Provide new currency for selected car: ");
+                            carIterator.setCurrency(validator.validateCurrency());
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 0 -> System.out.println("Back to home page");
                     }
-                    case 2 -> {
-                        System.out.println("Provide new model for selected car: ");
-                        String editModel = scanner.next();
-                        selectedCarObject.setModel(editModel);
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
-                    }
-                    case 3 -> {
-                        System.out.println("Provide new engine for selected car: ");
-                        selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
-                    }
-                    case 4 -> {
-                        System.out.println("Provide new type of fuel for selected car: ");
-                        selectedCarObject.setFuel(validator.validateFuel(selectedCarObject.getFuel()));
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
-                    }
-                    case 5 -> {
-                        System.out.println("Provide new price for selected car: ");
-                        selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
-                    }
-                    case 6 -> {
-                        System.out.println("Provide new currency for selected car: ");
-                        selectedCarObject.setCurrency(validator.validateCurrency(selectedCarObject.getCurrency()));
-                        System.out.println("Change has been saved");
-                        System.out.println("\n");
-                    }
-                    case 0 -> System.out.println("Back to home page");
-                }
-            } while (menu != 0);
-        } else {
-            System.out.println("Can not find car"); //TODO zwrotna informacja nie jest czytelna względem tego co robi metoda
+                } while (menu != 0);
+            }
         }
 
         return saveApplicationFile();
-
     }
 
     public HashSet<Car> removeCar() {
