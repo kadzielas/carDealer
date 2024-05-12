@@ -144,22 +144,21 @@ public class CarService {
                 " " + sortedCars.getFuel() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
-    public void selectCarToPrediction() {
+    public void selectCarToPrediction() throws Exception{
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
-        int selectedCar = scanner.nextInt();
+        int carID = scanner.nextInt();
 
-        for (Car selectedCarObject : CarList.listForCarService) {
-            if (selectedCarObject.getID().equals(selectedCar)) {
-                System.out.println("Selected car: " + "\nManufacturer: " + selectedCarObject.getManufacturer() +
-                        " | " + "Model: " + selectedCarObject.getModel() + " | " + "Engine: " +
-                        selectedCarObject.getEngine() + " " + selectedCarObject.getFuel() + " | " + "Price: " +
-                        selectedCarObject.getPrice() + " " + selectedCarObject.getCurrency() + "\n");
-                checkLoanPrice(selectedCarObject);
+        Car selectedCarObject = CarList.listForCarService.stream()
+                .filter(selectedCar -> selectedCar.getID() == carID)
+                .findFirst()
+                .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
+
+        checkLoanPrice(selectedCarObject);
             }
-        }
-    }
+
+
 
     private Loan checkLoanPrice(Car car){
         Loan loan = new Loan();
@@ -201,6 +200,7 @@ public class CarService {
         int selectedCar = scanner.nextInt();
 
         Iterator<Car> iterator = CarList.listForCarService.iterator();
+
         while (iterator.hasNext()) {
 
             Car carIterator = iterator.next();
@@ -216,6 +216,7 @@ public class CarService {
                         6.Currency
                         0.Back to home page""");
                     menu = scanner.nextInt();
+
                     switch (menu) {
                         case 1 -> {
                             System.out.println("Provide new manufacturer for selected car: ");
@@ -257,6 +258,9 @@ public class CarService {
                         case 0 -> System.out.println("Back to home page");
                     }
                 } while (menu != 0);
+            } else {
+                System.out.println("Provided ID is not assigned to any of car.");
+                //TODO dlaczego napis jest 7 razy jak to jest w else a if nie powinien się wykonać XD
             }
         }
 
