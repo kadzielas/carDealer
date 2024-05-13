@@ -18,6 +18,7 @@ public class Car implements Serializable {
     private String model;
     private BigDecimal engine;
     private Fuel fuel;
+    private Integer year;
     private BigDecimal price;
     private Currency currency;
 }

@@ -24,6 +24,7 @@ public class CarService {
     public Car validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
+        carValidate.setYear(0);
 
         System.out.println("Provide manufacturer: ");
         carValidate.setManufacturer(validator.validateManufacturer());
@@ -33,6 +34,8 @@ public class CarService {
         carValidate.setEngine(validator.validateEngine(carValidate.getEngine()));
         System.out.println("Provide type of fuel: ");
         carValidate.setFuel(validator.validateFuel());
+        System.out.println("Provide year of car: ");
+        carValidate.setYear(validator.validateYear(carValidate.getYear()));
         System.out.print("Provide price: ");
         carValidate.setPrice(validator.validatePrice(carValidate.getPrice()));
         System.out.println("Provide currency: ");
@@ -48,14 +51,15 @@ public class CarService {
                 .model(car.getModel())
                 .engine(car.getEngine())
                 .fuel(car.getFuel())
+                .year(car.getYear())
                 .price(car.getPrice())
                 .currency(car.getCurrency())
                 .build();
         CarList.listForCarService.add(newCar);
 
         System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
-                + " " + "\nEngine: " + car.getEngine() + " " + car.getFuel() + " " + "\nPrice: " + car.getPrice() + " "
-                + car.getCurrency());
+                + " " + "\nEngine: " + car.getEngine() + " " + car.getFuel() + " " + "\nYear: " + car.getYear() +
+                "\nPrice: " + car.getPrice() + " " + car.getCurrency());
 
         saveApplicationFile();
         saveLastId(newCar.getID());
@@ -128,8 +132,8 @@ public class CarService {
             if (selectedManufacturer.getManufacturer().equals(manufacturer)) {
                 System.out.println("ID: " + selectedManufacturer.getID() + " " + "Model: " +
                         selectedManufacturer.getModel() + " " + "Engine: " + selectedManufacturer.getEngine() +
-                        " " + selectedManufacturer.getFuel() + " " + "Price: " + selectedManufacturer.getPrice() +
-                        " " + selectedManufacturer.getCurrency());
+                        " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear()  +
+                        "Price: " + selectedManufacturer.getPrice() + " " + selectedManufacturer.getCurrency());
             }
         }
 
@@ -141,7 +145,8 @@ public class CarService {
 
         sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getID() + " | " + "Manufacturer: " +
                 sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | " + "Engine: " + sortedCars.getEngine() +
-                " " + sortedCars.getFuel() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
+                " " + sortedCars.getFuel() + " | " + "Year: " + sortedCars.getYear() + " | " +
+                "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
     public void selectCarToPrediction() throws Exception{
@@ -212,8 +217,9 @@ public class CarService {
                         2.Model
                         3.Engine
                         4.Fuel
-                        5.Price
-                        6.Currency
+                        5.Year
+                        6.Price
+                        7.Currency
                         0.Back to home page""");
                     menu = scanner.nextInt();
 
@@ -244,12 +250,18 @@ public class CarService {
                             System.out.println("\n");
                         }
                         case 5 -> {
+                            System.out.println("Provide new year for selected car: ");
+                            carIterator.setYear(validator.validateYear(carIterator.getYear()));
+                            System.out.println("Change has been saved");
+                            System.out.println("\n");
+                        }
+                        case 6 -> {
                             System.out.println("Provide new price for selected car: ");
                             carIterator.setPrice(validator.validatePrice(carIterator.getPrice()));
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
-                        case 6 -> {
+                        case 7 -> {
                             System.out.println("Provide new currency for selected car: ");
                             carIterator.setCurrency(validator.validateCurrency());
                             System.out.println("Change has been saved");
@@ -285,6 +297,7 @@ public class CarService {
                 carIterator.setManufacturer(null);
                 carIterator.setModel(null);
                 carIterator.setEngine(null);
+                carIterator.setYear(null);
                 carIterator.setPrice(null);
                 carIterator.setCurrency(null);
             }
