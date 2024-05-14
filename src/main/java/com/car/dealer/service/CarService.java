@@ -162,7 +162,7 @@ public class CarService {
                 .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
         checkLoanPrice(selectedCarObject);
-            }
+    }
 
 
 
@@ -182,7 +182,7 @@ public class CarService {
                 .multiply(loan.getPercent()));
         loan.setTotalYearPrice(loan.getYearCostWithoutPercent()
                 .add(loan.getYearPercentPrice()
-                .setScale(2, RoundingMode.HALF_UP)));
+                        .setScale(2, RoundingMode.HALF_UP)));
 
 
         for (int i = 1; i <= 5; i++){
@@ -209,8 +209,8 @@ public class CarService {
                 .findFirst()
                 .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
-                do {
-                    System.out.println("""
+        do {
+            System.out.println("""
                         What you want to change?
                         1.Manufacturer
                         2.Model
@@ -220,55 +220,55 @@ public class CarService {
                         6.Price
                         7.Currency
                         0.Back to home page""");
-                    menu = scanner.nextInt();
+            menu = scanner.nextInt();
 
-                    switch (menu) {
-                        case 1 -> {
-                            System.out.println("Provide new manufacturer for selected car: ");
-                            selectedCarObject.setManufacturer(validator.validateManufacturer());
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 2 -> {
-                            System.out.println("Provide new model for selected car: ");
-                            String editModel = scanner.next();
-                            selectedCarObject.setModel(editModel);
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 3 -> {
-                            System.out.println("Provide new engine for selected car: ");
-                            selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 4 -> {
-                            System.out.println("Provide new type of fuel for selected car: ");
-                            selectedCarObject.setFuel(validator.validateFuel());
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 5 -> {
-                            System.out.println("Provide new year for selected car: ");
-                            selectedCarObject.setYear(validator.validateYear(selectedCarObject.getYear()));
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 6 -> {
-                            System.out.println("Provide new price for selected car: ");
-                            selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 7 -> {
-                            System.out.println("Provide new currency for selected car: ");
-                            selectedCarObject.setCurrency(validator.validateCurrency());
-                            System.out.println("Change has been saved");
-                            System.out.println("\n");
-                        }
-                        case 0 -> System.out.println("Back to home page");
-                    }
-                } while (menu != 0);
+            switch (menu) {
+                case 1 -> {
+                    System.out.println("Provide new manufacturer for selected car: ");
+                    selectedCarObject.setManufacturer(validator.validateManufacturer());
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 2 -> {
+                    System.out.println("Provide new model for selected car: ");
+                    String editModel = scanner.next();
+                    selectedCarObject.setModel(editModel);
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 3 -> {
+                    System.out.println("Provide new engine for selected car: ");
+                    selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 4 -> {
+                    System.out.println("Provide new type of fuel for selected car: ");
+                    selectedCarObject.setFuel(validator.validateFuel());
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 5 -> {
+                    System.out.println("Provide new year for selected car: ");
+                    selectedCarObject.setYear(validator.validateYear(selectedCarObject.getYear()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 6 -> {
+                    System.out.println("Provide new price for selected car: ");
+                    selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 7 -> {
+                    System.out.println("Provide new currency for selected car: ");
+                    selectedCarObject.setCurrency(validator.validateCurrency());
+                    System.out.println("Change has been saved");
+                    System.out.println("\n");
+                }
+                case 0 -> System.out.println("Back to home page");
+            }
+        } while (menu != 0);
 
 
         return saveApplicationFile();
