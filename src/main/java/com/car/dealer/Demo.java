@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Demo {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         CarService.loadApplicationFile();
         Scanner scanner = new Scanner(System.in);
         int menu;

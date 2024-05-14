@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -176,40 +177,38 @@ public class CarService {
         loan.setPercent(new BigDecimal("0.15"));
 
         loan.setYearCostWithoutPercent(new BigDecimal(String.valueOf(car.getPrice()
-                .divide(loan.getYear(), 2, BigDecimal.ROUND_HALF_UP))));
+                .divide(loan.getYear(), 2, RoundingMode.HALF_UP))));
         loan.setYearPercentPrice(loan.getYearCostWithoutPercent()
                 .multiply(loan.getPercent()));
         loan.setTotalYearPrice(loan.getYearCostWithoutPercent()
                 .add(loan.getYearPercentPrice()
-                .setScale(2, BigDecimal.ROUND_HALF_UP)));
+                .setScale(2, RoundingMode.HALF_UP)));
 
 
         for (int i = 1; i <= 5; i++){
             BigDecimal resultPrice = loan.getTotalYearPrice().
-                    divide(BigDecimal.valueOf(i), 2, BigDecimal.ROUND_HALF_UP);
+                    divide(BigDecimal.valueOf(i), 2, RoundingMode.HALF_UP);
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
         return loan;
     }
 
-    public HashSet<Car> editCar() {
+    public HashSet<Car> editCar() throws Exception {
         Scanner scanner = new Scanner(System.in);
         CarService availableCarsToEdit = new CarService();
         availableCarsToEdit.showAllCars();
-
         CarValidator validator = new CarValidator();
 
         int menu;
 
         System.out.println("Provide ID of car to edit");
-        int selectedCar = scanner.nextInt();
+        int carID = scanner.nextInt();
 
-        Iterator<Car> iterator = CarList.listForCarService.iterator();
+        Car selectedCarObject = CarList.listForCarService.stream()
+                .filter(selectedCar -> selectedCar.getID() == carID)
+                .findFirst()
+                .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
-        while (iterator.hasNext()) {
-
-            Car carIterator = iterator.next();
-            if (carIterator.getID().equals(selectedCar)) {
                 do {
                     System.out.println("""
                         What you want to change?
@@ -226,55 +225,51 @@ public class CarService {
                     switch (menu) {
                         case 1 -> {
                             System.out.println("Provide new manufacturer for selected car: ");
-                            carIterator.setManufacturer(validator.validateManufacturer());
+                            selectedCarObject.setManufacturer(validator.validateManufacturer());
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 2 -> {
                             System.out.println("Provide new model for selected car: ");
                             String editModel = scanner.next();
-                            carIterator.setModel(editModel);
+                            selectedCarObject.setModel(editModel);
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 3 -> {
                             System.out.println("Provide new engine for selected car: ");
-                            carIterator.setEngine(validator.validateEngine(carIterator.getEngine()));
+                            selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 4 -> {
                             System.out.println("Provide new type of fuel for selected car: ");
-                            carIterator.setFuel(validator.validateFuel());
+                            selectedCarObject.setFuel(validator.validateFuel());
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 5 -> {
                             System.out.println("Provide new year for selected car: ");
-                            carIterator.setYear(validator.validateYear(carIterator.getYear()));
+                            selectedCarObject.setYear(validator.validateYear(selectedCarObject.getYear()));
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 6 -> {
                             System.out.println("Provide new price for selected car: ");
-                            carIterator.setPrice(validator.validatePrice(carIterator.getPrice()));
+                            selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 7 -> {
                             System.out.println("Provide new currency for selected car: ");
-                            carIterator.setCurrency(validator.validateCurrency());
+                            selectedCarObject.setCurrency(validator.validateCurrency());
                             System.out.println("Change has been saved");
                             System.out.println("\n");
                         }
                         case 0 -> System.out.println("Back to home page");
                     }
                 } while (menu != 0);
-            } else {
-                System.out.println("Provided ID is not assigned to any of car.");
-                //TODO dlaczego napis jest 7 razy jak to jest w else a if nie powinien się wykonać XD
-            }
-        }
+
 
         return saveApplicationFile();
     }
