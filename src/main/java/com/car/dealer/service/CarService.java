@@ -21,7 +21,7 @@ import java.util.Scanner;
 
 public class CarService {
 
-    public Car validateCar() {
+    public Car validateCar() { //todo chyba lepiej voida zrobic tutaj tak mysle, bo nie potrzebujesz tutaj zwrocic auta
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
         carValidate.setYear(0);
@@ -172,7 +172,7 @@ public class CarService {
                 "Three years price per month: ",
                 "Four years price per month: ",
                 "Five years price per month: "};
-        loan.setYear(new BigDecimal(12));
+        loan.setYear(new BigDecimal(12)); //todo czemu po prostu nie 12?
         loan.setPercent(new BigDecimal("0.15"));
 
         loan.setYearCostWithoutPercent(new BigDecimal(String.valueOf(car.getPrice()
@@ -209,7 +209,7 @@ public class CarService {
         while (iterator.hasNext()) {
 
             Car carIterator = iterator.next();
-            if (carIterator.getID().equals(selectedCar)) {
+            if (carIterator.getID().equals(selectedCar)) { //todo iterujesz bo liscie aut i porownujesz do wybranego auta dlatego rzuca ci elsa co chwila
                 do {
                     System.out.println("""
                         What you want to change?
