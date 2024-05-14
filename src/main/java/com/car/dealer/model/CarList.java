@@ -1,8 +1,14 @@
 package com.car.dealer.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+
+
 import java.util.HashSet;
 
+@Data
+@AllArgsConstructor
 public class CarList {
-    private static HashSet<Car> generalListOfCars = new HashSet<>();
-    public static HashSet<Car> listForCarService = CarList.generalListOfCars;
+    public static HashSet<Car> listForCarService;
 }
