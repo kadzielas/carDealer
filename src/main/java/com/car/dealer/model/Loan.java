@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Data
 public class Loan {
-    private BigDecimal year;
+    private Integer year;
     private BigDecimal percent;
     private BigDecimal yearCostWithoutPercent;
     private BigDecimal yearPercentPrice;

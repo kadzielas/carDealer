@@ -74,6 +74,7 @@ public class CarValidator {
         } while (true);
         return currency;
     }
+
     public int validateYear(int year) {
         Scanner scanner = new Scanner(System.in);
         do {
@@ -89,6 +90,7 @@ public class CarValidator {
         } while (true);
         return year;
     }
+
     public BigDecimal validatePrice(BigDecimal price) {
         Scanner scanner = new Scanner(System.in);
         do {

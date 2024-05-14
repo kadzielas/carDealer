@@ -5,6 +5,7 @@ import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
 import com.car.dealer.model.Loan;
 import com.car.dealer.validator.CarValidator;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -133,7 +133,7 @@ public class CarService {
             if (selectedManufacturer.getManufacturer().equals(manufacturer)) {
                 System.out.println("ID: " + selectedManufacturer.getID() + " " + "Model: " +
                         selectedManufacturer.getModel() + " " + "Engine: " + selectedManufacturer.getEngine() +
-                        " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear()  +
+                        " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear() +
                         "Price: " + selectedManufacturer.getPrice() + " " + selectedManufacturer.getCurrency());
             }
         }
@@ -144,13 +144,13 @@ public class CarService {
         List<Car> sortedListOfCars = new ArrayList<>(CarList.listForCarService);
         sortedListOfCars.sort(Comparator.comparingInt(Car::getID));
 
-        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getID() + " | " + "Manufacturer: " +
-                sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | " + "Engine: " + sortedCars.getEngine() +
-                " " + sortedCars.getFuel() + " | " + "Year: " + sortedCars.getYear() + " | " +
-                "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
+        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getID() + " | "
+                + "Manufacturer: " + sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | "
+                + "Engine: " + sortedCars.getEngine() + " " + sortedCars.getFuel() + " | "
+                + "Year: " + sortedCars.getYear() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
     }
 
-    public void selectCarToPrediction() throws Exception{
+    public void selectCarToPrediction() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Which one you want to take on loan? Please provide ID of car: ");
@@ -165,19 +165,18 @@ public class CarService {
     }
 
 
-
-    private Loan checkLoanPrice(Car car){
+    private Loan checkLoanPrice(Car car) {
         Loan loan = new Loan();
         String[] loanTime = {"null", "One year price per month: ",
                 "Two years price per month: ",
                 "Three years price per month: ",
                 "Four years price per month: ",
                 "Five years price per month: "};
-        loan.setYear(new BigDecimal(12));
         loan.setPercent(new BigDecimal("0.15"));
+        BigDecimal bigDecimalYear = new BigDecimal(loan.getYear());
 
         loan.setYearCostWithoutPercent(new BigDecimal(String.valueOf(car.getPrice()
-                .divide(loan.getYear(), 2, RoundingMode.HALF_UP))));
+                .divide(bigDecimalYear, 2, RoundingMode.HALF_UP))));
         loan.setYearPercentPrice(loan.getYearCostWithoutPercent()
                 .multiply(loan.getPercent()));
         loan.setTotalYearPrice(loan.getYearCostWithoutPercent()
@@ -185,7 +184,7 @@ public class CarService {
                         .setScale(2, RoundingMode.HALF_UP)));
 
 
-        for (int i = 1; i <= 5; i++){
+        for (int i = 1; i <= 5; i++) {
             BigDecimal resultPrice = loan.getTotalYearPrice().
                     divide(BigDecimal.valueOf(i), 2, RoundingMode.HALF_UP);
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
@@ -211,15 +210,15 @@ public class CarService {
 
         do {
             System.out.println("""
-                        What you want to change?
-                        1.Manufacturer
-                        2.Model
-                        3.Engine
-                        4.Fuel
-                        5.Year
-                        6.Price
-                        7.Currency
-                        0.Back to home page""");
+                    What you want to change?
+                    1.Manufacturer
+                    2.Model
+                    3.Engine
+                    4.Fuel
+                    5.Year
+                    6.Price
+                    7.Currency
+                    0.Back to home page""");
             menu = scanner.nextInt();
 
             switch (menu) {
@@ -274,29 +273,27 @@ public class CarService {
         return saveApplicationFile();
     }
 
-    public HashSet<Car> removeCar() {
+    public HashSet<Car> removeCar() throws Exception {
         CarService availableCarsToRemove = new CarService();
         availableCarsToRemove.showAllCars();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Provide ID of car to remove");
-        int selectedCar = scanner.nextInt();
+        int carID = scanner.nextInt();
 
-        Iterator<Car> iterator = CarList.listForCarService.iterator();
-        while (iterator.hasNext()) {
+        Car selectedCarObject = CarList.listForCarService.stream()
+                .filter(selectedCar -> selectedCar.getID() == carID)
+                .findFirst()
+                .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
-            Car carIterator = iterator.next();
-            if (carIterator.getID().equals(selectedCar)) {
-                iterator.remove();
-                carIterator.setID(null);
-                carIterator.setManufacturer(null);
-                carIterator.setModel(null);
-                carIterator.setEngine(null);
-                carIterator.setYear(null);
-                carIterator.setPrice(null);
-                carIterator.setCurrency(null);
-            }
-        }
+        selectedCarObject.setID(null);
+        selectedCarObject.setManufacturer(null);
+        selectedCarObject.setModel(null);
+        selectedCarObject.setEngine(null);
+        selectedCarObject.setYear(null);
+        selectedCarObject.setPrice(null);
+        selectedCarObject.setCurrency(null);
+
         return saveApplicationFile();
     }
 }
