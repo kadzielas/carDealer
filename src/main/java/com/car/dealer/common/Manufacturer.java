@@ -14,5 +14,7 @@ public enum Manufacturer {
     TOYOTA,
     VOLKSWAGEN,
     PEUGEOT,
-    OPEL
+    OPEL,
+    VOLVO,
+    FIAT
 }

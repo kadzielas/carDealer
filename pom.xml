@@ -6,8 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
 
 
-    <groupId>org.example</groupId>
-    <artifactId>Project_school</artifactId>
+    <groupId>com.car.dealer</groupId>
+    <artifactId>carDealer</artifactId>
     <version>1.0-SNAPSHOT</version>
     <dependencies>
         <dependency>
@@ -16,6 +16,19 @@
             <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Hibernate Core -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.5.7.Final</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
+        </dependency>
+
     </dependencies>
 
     <properties>

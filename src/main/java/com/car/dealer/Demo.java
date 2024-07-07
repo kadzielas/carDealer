@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class Demo {
 
     public static void main(String[] args) throws Exception {
-        CarService.loadApplicationFile();
+//        CarService.loadApplicationFile();
         Scanner scanner = new Scanner(System.in);
         int menu;
         do {
@@ -29,15 +29,16 @@ public class Demo {
                     CarFacade.CarList();
                     break;
                 case 2:
-                    CarService validator = new CarService();
-                    validator.validateCar();
+                    final CarService validator = new CarService();
+//                    validator.validateCar();
+                    validator.testCreateCar();
                     break;
                 case 3:
-                    CarService editor = new CarService();
+                   final CarService editor = new CarService();
                     editor.editCar();
                     break;
                 case 4:
-                    CarService remover = new CarService();
+                    final CarService remover = new CarService();
                     remover.removeCar();
                     break;
                 case 0:

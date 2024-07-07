@@ -1,36 +1,60 @@
 package com.car.dealer.service;
 
+import com.car.dealer.common.Currency;
+import com.car.dealer.common.Fuel;
 import com.car.dealer.common.Manufacturer;
+import com.car.dealer.common.Model;
+import com.car.dealer.config.HibernateUtil;
 import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
 import com.car.dealer.model.Loan;
 import com.car.dealer.validator.CarValidator;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 
 
 public class CarService {
 
+    private Car saveCar(Car car) {
+        Configuration configuration = new Configuration();
+        configuration.configure("hibernate.cfg.xml");
+
+
+        Transaction transaction = null;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            transaction = session.beginTransaction();
+            session.save(car);
+            session.flush();
+            transaction.commit();
+
+        }catch (Exception exception){
+            if (transaction != null){
+                transaction.rollback();
+            }
+            exception.printStackTrace();
+        }
+        return car;
+    }
+
     public Car validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
         carValidate.setYear(0);
 
+
         System.out.println("Provide manufacturer: ");
         carValidate.setManufacturer(validator.validateManufacturer());
         System.out.print("Provide model: ");
-        carValidate.setModel(String.valueOf(validator.validateModel()));
+//        carValidate.setModel(String.valueOf(validator.validateModel()));
+        carValidate.setModel(validator.validateModel());
         System.out.print("Provide engine: ");
         carValidate.setEngine(validator.validateEngine(carValidate.getEngine()));
         System.out.println("Provide type of fuel: ");
@@ -45,9 +69,9 @@ public class CarService {
     }
 
     private Car createCar(Car car) {
-        loadApplicationFile();
+//        loadApplicationFile();
         Car newCar = Car.builder()
-                .ID(loadLastId() + 1)
+                .id(1)
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
                 .engine(car.getEngine())
@@ -58,68 +82,83 @@ public class CarService {
                 .build();
         CarList.listForCarService.add(newCar);
 
-        System.out.println("\nCar has been created with following details: " + "\nModel: " + car.getModel()
-                + " " + "\nEngine: " + car.getEngine() + " " + car.getFuel() + " " + "\nYear: " + car.getYear() +
-                "\nPrice: " + car.getPrice() + " " + car.getCurrency());
+        System.out.println("\nCar has been created with following details: " + "\nModel: " + newCar.getModel()
+                + " " + "\nEngine: " + newCar.getEngine() + " " + newCar.getFuel() + " " + "\nYear: " + newCar.getYear() +
+                "\nPrice: " + newCar.getPrice() + " " + newCar.getCurrency() + newCar.getId());
 
-        saveApplicationFile();
-        saveLastId(newCar.getID());
+//        saveApplicationFile();
+//        saveLastId(newCar.getID());
+        saveCar(newCar);
         return newCar;
     }
 
-    private static int loadLastId() {
-        int lastId = 0;
-        try {
-            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\lastId.txt");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            lastId = (int) objectInputStream.readObject();
-            objectInputStream.close();
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error " + e.getMessage());
-        }
-        return lastId;
+    public Car testCreateCar() {
+        Car car = Car.builder()
+                .manufacturer(Manufacturer.AUDI)
+                .model(Model.A3)
+                .engine(new BigDecimal(2.0f))
+                .fuel(Fuel.PB)
+                .year(2023)
+                .price(new BigDecimal(2130.00f))
+                .currency(Currency.PLN)
+                .build();
+
+        return saveCar(car);
     }
 
-    private static void saveLastId(int lastId) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\lastId.txt");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(lastId);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-        } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
-        }
-    }
+//    private static int loadLastId() {
+//        int lastId = 0;
+//        try {
+//            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\lastId.txt");
+//            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+//            lastId = (int) objectInputStream.readObject();
+//            objectInputStream.close();
+//        } catch (IOException | ClassNotFoundException e) {
+//            System.out.println("Error " + e.getMessage());
+//        }
+//        return lastId;
+//    }
 
-    private static HashSet<Car> saveApplicationFile() {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            for (Car savedCars : CarList.listForCarService) {
-                objectOutputStream.writeObject(savedCars);
-            }
-            objectOutputStream.flush();
-            objectOutputStream.close();
-        } catch (IOException ioe) {
-            System.err.println("Error during saving to file");
-        }
-        return CarList.listForCarService;
-    }
+//    private static void saveLastId(int lastId) {
+//        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\lastId.txt");
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(lastId);
+//            objectOutputStream.flush();
+//            objectOutputStream.close();
+//        } catch (IOException e) {
+//            System.out.println("Error " + e.getMessage());
+//        }
+//    }
 
-    public static void loadApplicationFile() {
-        try {
-            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\carDealer.txt");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            while (fileInputStream.available() > 0) {
-                Car car = (Car) objectInputStream.readObject();
-                CarList.listForCarService.add(car);
-            }
-            objectInputStream.close();
-        } catch (Exception ex) {
-            System.err.println("Error during loading file " + ex.getMessage());
-        }
-    }
+//    private static HashSet<Car> saveApplicationFile() {
+//        try {
+//            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            for (Car savedCars : CarList.listForCarService) {
+//                objectOutputStream.writeObject(savedCars);
+//            }
+//            objectOutputStream.flush();
+//            objectOutputStream.close();
+//        } catch (IOException ioe) {
+//            System.err.println("Error during saving to file");
+//        }
+//        return CarList.listForCarService;
+//    }
+
+//    public static void loadApplicationFile() {
+//        try {
+//            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\carDealer.txt");
+//            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+//            while (fileInputStream.available() > 0) {
+//                Car car = (Car) objectInputStream.readObject();
+//                CarList.listForCarService.add(car);
+//            }
+//            objectInputStream.close();
+//        } catch (Exception ex) {
+//            System.err.println("Error during loading file " + ex.getMessage());
+//        }
+//    }
 
 
     public void findByManufacturer() {
@@ -130,7 +169,7 @@ public class CarService {
 
         for (Car selectedManufacturer : CarList.listForCarService) {
             if (selectedManufacturer.getManufacturer().equals(manufacturer)) {
-                System.out.println("ID: " + selectedManufacturer.getID() + " " + "Model: " +
+                System.out.println("ID: " + selectedManufacturer.getId() + " " + "Model: " +
                         selectedManufacturer.getModel() + " " + "Engine: " + selectedManufacturer.getEngine() +
                         " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear() + " " +
                         "Price: " + selectedManufacturer.getPrice() + " " + selectedManufacturer.getCurrency());
@@ -141,9 +180,11 @@ public class CarService {
 
     public void showAllCars() {
         List<Car> sortedListOfCars = new ArrayList<>(CarList.listForCarService);
-        sortedListOfCars.sort(Comparator.comparingInt(Car::getID));
+//        sortedListOfCars.sort(Comparator.comparingInt(Car::getID));
 
-        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getID() + " | "
+        //TODO nie można usunąć dwóch samochodów (chyba kasuje całą liste XD)
+
+        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getId() + " | "
                 + "Manufacturer: " + sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | "
                 + "Engine: " + sortedCars.getEngine() + " " + sortedCars.getFuel() + " | "
                 + "Year: " + sortedCars.getYear() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
@@ -156,7 +197,7 @@ public class CarService {
         int carID = scanner.nextInt();
 
         Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(selectedCar -> selectedCar.getID() == carID)
+                .filter(selectedCar -> selectedCar.getId() == carID)
                 .findFirst()
                 .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
@@ -190,7 +231,8 @@ public class CarService {
         }
     }
 
-    public HashSet<Car> editCar() throws Exception {
+//    public HashSet<Car> editCar() throws Exception {
+    public void editCar() throws Exception {
         Scanner scanner = new Scanner(System.in);
         CarService availableCarsToEdit = new CarService();
         availableCarsToEdit.showAllCars();
@@ -202,7 +244,7 @@ public class CarService {
         int carID = scanner.nextInt();
 
         Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(selectedCar -> selectedCar.getID() == carID)
+                .filter(selectedCar -> selectedCar.getId() == carID)
                 .findFirst()
                 .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
@@ -229,7 +271,8 @@ public class CarService {
                 case 2 -> {
                     System.out.println("Provide new model for selected car: ");
                     String editModel = scanner.next();
-                    selectedCarObject.setModel(editModel);
+//                    selectedCarObject.setModel(editModel);
+                    selectedCarObject.setModel(validator.validateModel());
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
@@ -268,10 +311,11 @@ public class CarService {
         } while (menu != 0);
 
 
-        return saveApplicationFile();
+//        return saveApplicationFile();
     }
 
-    public HashSet<Car> removeCar() throws Exception {
+//    public HashSet<Car> removeCar() throws Exception {
+    public void removeCar() throws Exception {
         CarService availableCarsToRemove = new CarService();
         availableCarsToRemove.showAllCars();
         Scanner scanner = new Scanner(System.in);
@@ -280,11 +324,11 @@ public class CarService {
         int carID = scanner.nextInt();
 
         Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(selectedCar -> selectedCar.getID() == carID)
+                .filter(selectedCar -> selectedCar.getId() == carID)
                 .findFirst()
                 .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
 
-        selectedCarObject.setID(null);
+        selectedCarObject.setId(null);
         selectedCarObject.setManufacturer(null);
         selectedCarObject.setModel(null);
         selectedCarObject.setEngine(null);
@@ -292,7 +336,7 @@ public class CarService {
         selectedCarObject.setPrice(null);
         selectedCarObject.setCurrency(null);
 
-        return saveApplicationFile();
+//        return saveApplicationFile();
     }
 }
 
