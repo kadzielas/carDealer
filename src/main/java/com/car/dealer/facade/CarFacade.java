@@ -45,6 +45,7 @@ public class CarFacade {
 
             } catch (Exception exception) {
                 System.out.println("Wrong number. You are back to previous page.\n");
+                exception.printStackTrace();
 
             }
         } while (menu != 0);

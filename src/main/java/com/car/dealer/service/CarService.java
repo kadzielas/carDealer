@@ -102,12 +102,12 @@ public class CarService {
             objectOutputStream.flush();
             objectOutputStream.close();
         } catch (IOException ioe) {
-            System.err.println("Error saving to file");
+            System.err.println("Error during saving to file");
         }
         return CarList.listForCarService;
     }
 
-    public static HashSet<Car> loadApplicationFile() {
+    public static void loadApplicationFile() {
         try {
             FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\carDealer.txt");
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -117,9 +117,8 @@ public class CarService {
             }
             objectInputStream.close();
         } catch (Exception ex) {
-            System.err.println("Error loading file " + ex.getMessage());
+            System.err.println("Error during loading file " + ex.getMessage());
         }
-        return CarList.listForCarService;
     }
 
 
@@ -133,7 +132,7 @@ public class CarService {
             if (selectedManufacturer.getManufacturer().equals(manufacturer)) {
                 System.out.println("ID: " + selectedManufacturer.getID() + " " + "Model: " +
                         selectedManufacturer.getModel() + " " + "Engine: " + selectedManufacturer.getEngine() +
-                        " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear() +
+                        " " + selectedManufacturer.getFuel() + " " + "Year: " + selectedManufacturer.getYear() + " " +
                         "Price: " + selectedManufacturer.getPrice() + " " + selectedManufacturer.getCurrency());
             }
         }
@@ -165,15 +164,15 @@ public class CarService {
     }
 
 
-    private Loan checkLoanPrice(Car car) {
+    private void checkLoanPrice(Car car) {
         Loan loan = new Loan();
         String[] loanTime = {"null", "One year price per month: ",
                 "Two years price per month: ",
                 "Three years price per month: ",
                 "Four years price per month: ",
                 "Five years price per month: "};
-        loan.setPercent(new BigDecimal("0.15"));
-        BigDecimal bigDecimalYear = new BigDecimal(loan.getYear());
+        loan.setPercent(new BigDecimal("0.08"));
+        BigDecimal bigDecimalYear = new BigDecimal(12);
 
         loan.setYearCostWithoutPercent(new BigDecimal(String.valueOf(car.getPrice()
                 .divide(bigDecimalYear, 2, RoundingMode.HALF_UP))));
@@ -189,7 +188,6 @@ public class CarService {
                     divide(BigDecimal.valueOf(i), 2, RoundingMode.HALF_UP);
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
-        return loan;
     }
 
     public HashSet<Car> editCar() throws Exception {
