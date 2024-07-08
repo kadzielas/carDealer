@@ -24,7 +24,7 @@ public class CarFacade {
 
                     case 1:
                         CarService cars = new CarService();
-                        cars.showAllCars();
+                        cars.showAvailableCars();
                         System.out.println("\n");
                         break;
 

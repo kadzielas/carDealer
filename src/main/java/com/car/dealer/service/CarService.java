@@ -18,6 +18,7 @@ import java.util.Scanner;
 
 
 public class CarService {
+   final private Scanner scanner = new Scanner(System.in);
 
     private void saveCar(Car car) {
         Configuration configuration = new Configuration();
@@ -79,7 +80,7 @@ public class CarService {
     }
     private void getCarsFromDataBase(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
+            Query<Car> query = session.createNativeQuery("SELECT * FROM car ", Car.class);
             CarList.queryList= query.list();
             CarList.listForCarService = new LinkedList<>(CarList.queryList);
             //TODO nie wiem czy to ma sens
@@ -87,7 +88,7 @@ public class CarService {
             exception.printStackTrace();
         }
     }
-    public void showAllCars() {
+    public void showAvailableCars() {
         getCarsFromDataBase();
         System.out.println("List of all cars:");
         for (Car car : CarList.listForCarService) {
@@ -124,8 +125,6 @@ public class CarService {
 
         checkLoanPrice(selectedCarObject);
     }
-
-
     private void checkLoanPrice(Car car) {
         Loan loan = new Loan();
         String[] loanTime = {"null", "One year price per month: ",
@@ -151,12 +150,10 @@ public class CarService {
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
     }
-
-//    public HashSet<Car> editCar() throws Exception {
     public void editCar() throws Exception {
         Scanner scanner = new Scanner(System.in);
         CarService availableCarsToEdit = new CarService();
-        availableCarsToEdit.showAllCars();
+        availableCarsToEdit.showAvailableCars();
         CarValidator validator = new CarValidator();
 
         int menu;
@@ -229,33 +226,27 @@ public class CarService {
             }
         } while (menu != 0);
 
-
-//        return saveApplicationFile();
     }
+    public void removeCar() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            if (CarList.listForCarService.isEmpty()) {
+                System.out.println("No available cars found.");
+            } else {
+                CarService availableCarsToRemove = new CarService();
+                availableCarsToRemove.showAvailableCars();
 
-//    public HashSet<Car> removeCar() throws Exception {
-    public void removeCar() throws Exception {
-        CarService availableCarsToRemove = new CarService();
-        availableCarsToRemove.showAllCars();
-        Scanner scanner = new Scanner(System.in);
+                System.out.println("Enter car ID to remove: ");
+                int carID = scanner.nextInt();
 
-        System.out.println("Provide ID of car to remove");
-        int carID = scanner.nextInt();
-
-        Car selectedCarObject = CarList.listForCarService.stream()
-                .filter(selectedCar -> selectedCar.getId() == carID)
-                .findFirst()
-                .orElseThrow(() -> new Exception("ID " + carID + " is not assigned to any car."));
-
-        selectedCarObject.setId(null);
-        selectedCarObject.setManufacturer(null);
-        selectedCarObject.setModel(null);
-        selectedCarObject.setEngine(null);
-        selectedCarObject.setYear(null);
-        selectedCarObject.setPrice(null);
-        selectedCarObject.setCurrency(null);
-
-//        return saveApplicationFile();
+                Query<Car> query = session.createNativeQuery("DELETE FROM car WHERE id = :id", Car.class);
+                query.setParameter("id", carID);
+                System.out.println("Car with ID " + carID + " has been deleted.");
+                CarList.queryList = query.getResultList();
+                CarList.listForCarService = new LinkedList<>(CarList.queryList);
+            }
+        }catch (Exception exception){
+            exception.printStackTrace();
+        }
     }
 }
 

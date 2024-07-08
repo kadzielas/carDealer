@@ -9,11 +9,10 @@ import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class CarValidator {
-
+   final private Scanner scanner = new Scanner(System.in); //czy można zrobić to public i używać w innych klasach
     public Model validateModel() {
         Model model;
         do {
-            Scanner scanner = new Scanner(System.in);
             try {
                 String modelInput = scanner.nextLine().toUpperCase();
                 model = Model.valueOf(modelInput);
@@ -29,7 +28,6 @@ public class CarValidator {
     public Manufacturer validateManufacturer() {
         Manufacturer manufacturer;
         do {
-            Scanner scanner = new Scanner(System.in);
             try {
                 String manufacturerInput = scanner.nextLine().toUpperCase();
                 manufacturer = Manufacturer.valueOf(manufacturerInput);
@@ -46,7 +44,6 @@ public class CarValidator {
     public Fuel validateFuel() {
         Fuel fuel;
         do {
-            Scanner scanner = new Scanner(System.in);
             try {
                 String fuelInput = scanner.nextLine().toUpperCase();
                 fuel = Fuel.valueOf(fuelInput);
@@ -62,7 +59,6 @@ public class CarValidator {
     public Currency validateCurrency() {
         Currency currency;
         do {
-            Scanner scanner = new Scanner(System.in);
             try {
                 String currencyInput = scanner.nextLine().toUpperCase();
                 currency = Currency.valueOf(currencyInput);
@@ -76,7 +72,6 @@ public class CarValidator {
     }
 
     public int validateYear(int year) {
-        Scanner scanner = new Scanner(System.in);
         do {
             try {
                 int yearInput = scanner.nextInt();
@@ -92,7 +87,6 @@ public class CarValidator {
     }
 
     public BigDecimal validatePrice(BigDecimal price) {
-        Scanner scanner = new Scanner(System.in);
         do {
             try {
                 BigDecimal priceInput = scanner.nextBigDecimal();
@@ -108,7 +102,6 @@ public class CarValidator {
     }
 
     public BigDecimal validateEngine(BigDecimal engine) {
-        Scanner scanner = new Scanner(System.in);
         do {
             try {
                 BigDecimal engineInput = scanner.nextBigDecimal();
