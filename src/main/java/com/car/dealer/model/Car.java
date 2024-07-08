@@ -24,13 +24,13 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "car3")
+@Table(name = "car")
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "manufacturer", nullable = false)
     private Manufacturer manufacturer;
 
@@ -41,7 +41,7 @@ public class Car {
     @Column(name = "engine", nullable = false)
     private BigDecimal engine;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "fuel", nullable = false)
     private Fuel fuel;
 
@@ -51,7 +51,7 @@ public class Car {
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false)
     private Currency currency;
 }

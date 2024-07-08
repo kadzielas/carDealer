@@ -30,7 +30,7 @@ public class CarFacade {
 
                     case 2:
                         CarService manufacturerResult = new CarService();
-                        manufacturerResult.findByManufacturer();
+                        manufacturerResult.findCarByManufacturer();
                         System.out.println("\n");
                         break;
 

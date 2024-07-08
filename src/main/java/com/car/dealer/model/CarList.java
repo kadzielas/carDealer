@@ -3,10 +3,12 @@ package com.car.dealer.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class CarList {
-    public static HashSet<Car> listForCarService = new HashSet<>();
+    public static LinkedList<Car> listForCarService;
+    public static List<Car> queryList;
 }

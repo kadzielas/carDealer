@@ -1,9 +1,6 @@
 package com.car.dealer.service;
 
-import com.car.dealer.common.Currency;
-import com.car.dealer.common.Fuel;
 import com.car.dealer.common.Manufacturer;
-import com.car.dealer.common.Model;
 import com.car.dealer.config.HibernateUtil;
 import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
@@ -12,21 +9,19 @@ import com.car.dealer.validator.CarValidator;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 
 public class CarService {
 
-    private Car saveCar(Car car) {
+    private void saveCar(Car car) {
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
-
-
         Transaction transaction = null;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
@@ -41,19 +36,15 @@ public class CarService {
             }
             exception.printStackTrace();
         }
-        return car;
     }
-
     public Car validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
         carValidate.setYear(0);
 
-
         System.out.println("Provide manufacturer: ");
         carValidate.setManufacturer(validator.validateManufacturer());
         System.out.print("Provide model: ");
-//        carValidate.setModel(String.valueOf(validator.validateModel()));
         carValidate.setModel(validator.validateModel());
         System.out.print("Provide engine: ");
         carValidate.setEngine(validator.validateEngine(carValidate.getEngine()));
@@ -67,11 +58,8 @@ public class CarService {
         carValidate.setCurrency(validator.validateCurrency());
         return createCar(carValidate);
     }
-
     private Car createCar(Car car) {
-//        loadApplicationFile();
         Car newCar = Car.builder()
-                .id(1)
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
                 .engine(car.getEngine())
@@ -84,85 +72,32 @@ public class CarService {
 
         System.out.println("\nCar has been created with following details: " + "\nModel: " + newCar.getModel()
                 + " " + "\nEngine: " + newCar.getEngine() + " " + newCar.getFuel() + " " + "\nYear: " + newCar.getYear() +
-                "\nPrice: " + newCar.getPrice() + " " + newCar.getCurrency() + newCar.getId());
+                "\nPrice: " + newCar.getPrice() + " " + newCar.getCurrency());
 
-//        saveApplicationFile();
-//        saveLastId(newCar.getID());
         saveCar(newCar);
         return newCar;
     }
-
-    public Car testCreateCar() {
-        Car car = Car.builder()
-                .manufacturer(Manufacturer.AUDI)
-                .model(Model.A3)
-                .engine(new BigDecimal(2.0f))
-                .fuel(Fuel.PB)
-                .year(2023)
-                .price(new BigDecimal(2130.00f))
-                .currency(Currency.PLN)
-                .build();
-
-        return saveCar(car);
+    private void getCarsFromDataBase(){
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
+            CarList.queryList= query.list();
+            CarList.listForCarService = new LinkedList<>(CarList.queryList);
+            //TODO nie wiem czy to ma sens
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
-
-//    private static int loadLastId() {
-//        int lastId = 0;
-//        try {
-//            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\lastId.txt");
-//            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-//            lastId = (int) objectInputStream.readObject();
-//            objectInputStream.close();
-//        } catch (IOException | ClassNotFoundException e) {
-//            System.out.println("Error " + e.getMessage());
-//        }
-//        return lastId;
-//    }
-
-//    private static void saveLastId(int lastId) {
-//        try {
-//            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\lastId.txt");
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-//            objectOutputStream.writeObject(lastId);
-//            objectOutputStream.flush();
-//            objectOutputStream.close();
-//        } catch (IOException e) {
-//            System.out.println("Error " + e.getMessage());
-//        }
-//    }
-
-//    private static HashSet<Car> saveApplicationFile() {
-//        try {
-//            FileOutputStream fileOutputStream = new FileOutputStream("src\\main\\resources\\carDealer.txt");
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-//            for (Car savedCars : CarList.listForCarService) {
-//                objectOutputStream.writeObject(savedCars);
-//            }
-//            objectOutputStream.flush();
-//            objectOutputStream.close();
-//        } catch (IOException ioe) {
-//            System.err.println("Error during saving to file");
-//        }
-//        return CarList.listForCarService;
-//    }
-
-//    public static void loadApplicationFile() {
-//        try {
-//            FileInputStream fileInputStream = new FileInputStream("src\\main\\resources\\carDealer.txt");
-//            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-//            while (fileInputStream.available() > 0) {
-//                Car car = (Car) objectInputStream.readObject();
-//                CarList.listForCarService.add(car);
-//            }
-//            objectInputStream.close();
-//        } catch (Exception ex) {
-//            System.err.println("Error during loading file " + ex.getMessage());
-//        }
-//    }
-
-
-    public void findByManufacturer() {
-
+    public void showAllCars() {
+        getCarsFromDataBase();
+        System.out.println("List of all cars:");
+        for (Car car : CarList.listForCarService) {
+            System.out.println("ID: " + car.getId() + " | "
+                    + "Manufacturer: " + car.getManufacturer() + " | " + "Model: " + car.getModel() + " | "
+                    + "Engine: " + car.getEngine() + " " + car.getFuel() + " | "
+                    + "Year: " + car.getYear() + " | " + "Price: " + car.getPrice() + " " + car.getCurrency());
+        }
+    }
+    public void findCarByManufacturer() {
         System.out.println("Provide manufacturer name: ");
         CarValidator validator = new CarValidator();
         Manufacturer manufacturer = validator.validateManufacturer();
@@ -175,21 +110,7 @@ public class CarService {
                         "Price: " + selectedManufacturer.getPrice() + " " + selectedManufacturer.getCurrency());
             }
         }
-
     }
-
-    public void showAllCars() {
-        List<Car> sortedListOfCars = new ArrayList<>(CarList.listForCarService);
-//        sortedListOfCars.sort(Comparator.comparingInt(Car::getID));
-
-        //TODO nie można usunąć dwóch samochodów (chyba kasuje całą liste XD)
-
-        sortedListOfCars.forEach(sortedCars -> System.out.println("ID: " + sortedCars.getId() + " | "
-                + "Manufacturer: " + sortedCars.getManufacturer() + " | " + "Model: " + sortedCars.getModel() + " | "
-                + "Engine: " + sortedCars.getEngine() + " " + sortedCars.getFuel() + " | "
-                + "Year: " + sortedCars.getYear() + " | " + "Price: " + sortedCars.getPrice() + " " + sortedCars.getCurrency()));
-    }
-
     public void selectCarToPrediction() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
@@ -270,8 +191,6 @@ public class CarService {
                 }
                 case 2 -> {
                     System.out.println("Provide new model for selected car: ");
-                    String editModel = scanner.next();
-//                    selectedCarObject.setModel(editModel);
                     selectedCarObject.setModel(validator.validateModel());
                     System.out.println("Change has been saved");
                     System.out.println("\n");

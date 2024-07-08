@@ -30,8 +30,7 @@ public class Demo {
                     break;
                 case 2:
                     final CarService validator = new CarService();
-//                    validator.validateCar();
-                    validator.testCreateCar();
+                    validator.validateCar();
                     break;
                 case 3:
                    final CarService editor = new CarService();
