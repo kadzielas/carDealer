@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class CarValidator {
    final private Scanner scanner = new Scanner(System.in); //czy można zrobić to public i używać w innych klasach
+
     public Model validateModel() {
         Model model;
         do {

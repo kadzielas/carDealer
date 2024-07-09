@@ -13,7 +13,6 @@ import org.hibernate.query.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.LinkedList;
 import java.util.Scanner;
 
 
@@ -38,7 +37,7 @@ public class CarService {
             exception.printStackTrace();
         }
     }
-    public Car validateCar() {
+    public void validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
         carValidate.setYear(0);
@@ -57,9 +56,9 @@ public class CarService {
         carValidate.setPrice(validator.validatePrice(carValidate.getPrice()));
         System.out.println("Provide currency: ");
         carValidate.setCurrency(validator.validateCurrency());
-        return createCar(carValidate);
+        createCar(carValidate);
     }
-    private Car createCar(Car car) {
+    private void createCar(Car car) {
         Car newCar = Car.builder()
                 .manufacturer(car.getManufacturer())
                 .model(car.getModel())
@@ -76,20 +75,21 @@ public class CarService {
                 "\nPrice: " + newCar.getPrice() + " " + newCar.getCurrency());
 
         saveCar(newCar);
-        return newCar;
     }
-    private void getCarsFromDataBase(){
+    private void getAllCarsFromDataBase(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Car> query = session.createNativeQuery("SELECT * FROM car ", Car.class);
+            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
             CarList.queryList= query.list();
-            CarList.listForCarService = new LinkedList<>(CarList.queryList);
+            CarList.listForCarService = CarList.queryList;
             //TODO nie wiem czy to ma sens
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
+
+
     public void showAvailableCars() {
-        getCarsFromDataBase();
+        getAllCarsFromDataBase();
         System.out.println("List of all cars:");
         for (Car car : CarList.listForCarService) {
             System.out.println("ID: " + car.getId() + " | "
@@ -150,14 +150,20 @@ public class CarService {
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
     }
-    public void editCar() throws Exception {
+    public void editCar() {
         Scanner scanner = new Scanner(System.in);
         CarService availableCarsToEdit = new CarService();
         availableCarsToEdit.showAvailableCars();
         CarValidator validator = new CarValidator();
+        Transaction transaction = null;
 
         int menu;
+        String[] column = {"manufacturer", "model", "engine", "fuel", "year", "price", "currency"};
+        String value;
 
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            transaction = session.beginTransaction();
+//            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
         System.out.println("Provide ID of car to edit");
         int carID = scanner.nextInt();
 
@@ -180,9 +186,18 @@ public class CarService {
             menu = scanner.nextInt();
 
             switch (menu) {
+
                 case 1 -> {
                     System.out.println("Provide new manufacturer for selected car: ");
                     selectedCarObject.setManufacturer(validator.validateManufacturer());
+                    value = String.valueOf(selectedCarObject.getManufacturer());
+                    Query<Car> query = session.createNativeQuery("UPDATE car SET :column = :value WHERE :id", Car.class);
+                    query.setParameter(carID, "id");
+                    query.setParameter(column[0], "column");
+                    query.setParameter("value", value);
+                    CarList.listForCarService = query.getResultList();
+                    session.update(selectedCarObject);
+                    transaction.commit();
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
@@ -226,6 +241,15 @@ public class CarService {
             }
         } while (menu != 0);
 
+//            CarList.queryList = query.list();
+        }catch (Exception exception){
+            exception.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
+        }
+
+
     }
     public void removeCar() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -242,7 +266,8 @@ public class CarService {
                 query.setParameter("id", carID);
                 System.out.println("Car with ID " + carID + " has been deleted.");
                 CarList.queryList = query.getResultList();
-                CarList.listForCarService = new LinkedList<>(CarList.queryList);
+                CarList.listForCarService = CarList.queryList;
+                System.out.println(query.getResultList());
             }
         }catch (Exception exception){
             exception.printStackTrace();
