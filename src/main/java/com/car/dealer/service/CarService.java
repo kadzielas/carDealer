@@ -76,16 +76,16 @@ public class CarService {
 
         saveCar(newCar);
     }
-    private void getAllCarsFromDataBase(){
+    public void getAllCarsFromDataBase(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
             CarList.queryList= query.list();
             CarList.listForCarService = CarList.queryList;
-            //TODO nie wiem czy to ma sens
         } catch (Exception exception) {
             exception.printStackTrace();
         }
     }
+
 
 
     public void showAvailableCars() {
@@ -158,12 +158,9 @@ public class CarService {
         Transaction transaction = null;
 
         int menu;
-        String[] column = {"manufacturer", "model", "engine", "fuel", "year", "price", "currency"};
-        String value;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()){
             transaction = session.beginTransaction();
-//            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
         System.out.println("Provide ID of car to edit");
         int carID = scanner.nextInt();
 
@@ -190,50 +187,63 @@ public class CarService {
                 case 1 -> {
                     System.out.println("Provide new manufacturer for selected car: ");
                     selectedCarObject.setManufacturer(validator.validateManufacturer());
-                    value = String.valueOf(selectedCarObject.getManufacturer());
-                    Query<Car> query = session.createNativeQuery("UPDATE car SET :column = :value WHERE :id", Car.class);
-                    query.setParameter(carID, "id");
-                    query.setParameter(column[0], "column");
-                    query.setParameter("value", value);
-                    CarList.listForCarService = query.getResultList();
-                    session.update(selectedCarObject);
-                    transaction.commit();
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setManufacturer(selectedCarObject.getManufacturer());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 2 -> {
                     System.out.println("Provide new model for selected car: ");
                     selectedCarObject.setModel(validator.validateModel());
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setModel(selectedCarObject.getModel());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 3 -> {
                     System.out.println("Provide new engine for selected car: ");
                     selectedCarObject.setEngine(validator.validateEngine(selectedCarObject.getEngine()));
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setEngine(selectedCarObject.getEngine());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 4 -> {
                     System.out.println("Provide new type of fuel for selected car: ");
                     selectedCarObject.setFuel(validator.validateFuel());
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setFuel(selectedCarObject.getFuel());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 5 -> {
                     System.out.println("Provide new year for selected car: ");
                     selectedCarObject.setYear(validator.validateYear(selectedCarObject.getYear()));
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setYear(selectedCarObject.getYear());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 6 -> {
                     System.out.println("Provide new price for selected car: ");
                     selectedCarObject.setPrice(validator.validatePrice(selectedCarObject.getPrice()));
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setPrice(selectedCarObject.getPrice());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
                 case 7 -> {
                     System.out.println("Provide new currency for selected car: ");
                     selectedCarObject.setCurrency(validator.validateCurrency());
+                    Car car = session.get(Car.class, selectedCarObject.getId());
+                    car.setCurrency(selectedCarObject.getCurrency());
+                    session.update(car);
                     System.out.println("Change has been saved");
                     System.out.println("\n");
                 }
@@ -241,15 +251,15 @@ public class CarService {
             }
         } while (menu != 0);
 
-//            CarList.queryList = query.list();
+        session.flush();
+        transaction.commit();
+
         }catch (Exception exception){
             exception.printStackTrace();
             if (transaction != null){
                 transaction.rollback();
             }
         }
-
-
     }
     public void removeCar() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

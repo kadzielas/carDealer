@@ -2,14 +2,12 @@ package com.car.dealer;
 
 import com.car.dealer.facade.CarFacade;
 import com.car.dealer.service.CarService;
-
 import java.util.Scanner;
 
-
 public class Demo {
-
     public static void main(String[] args) throws Exception {
-//        CarService.loadApplicationFile();
+        final CarService connectToDataBase = new CarService();
+        connectToDataBase.getAllCarsFromDataBase();
         Scanner scanner = new Scanner(System.in);
         int menu;
         do {
