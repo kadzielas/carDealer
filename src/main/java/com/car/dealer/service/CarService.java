@@ -19,6 +19,7 @@ import java.util.Scanner;
 public class CarService {
    final private Scanner scanner = new Scanner(System.in);
 
+   //saveCar - function to save car into database, it is used only in createCar function
     private void saveCar(Car car) {
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
@@ -30,13 +31,15 @@ public class CarService {
             session.flush();
             transaction.commit();
 
-        }catch (Exception exception){
+        }catch (Exception saveCarException){
             if (transaction != null){
                 transaction.rollback();
             }
-            exception.printStackTrace();
+            saveCarException.printStackTrace();
         }
     }
+
+    //validateCar - method to validate information about car before build new object
     public void validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
@@ -58,6 +61,8 @@ public class CarService {
         carValidate.setCurrency(validator.validateCurrency());
         createCar(carValidate);
     }
+
+    //createCar - function takes every validated information about new car and use it to build new object (car). It's running instantly after validateCar method
     private void createCar(Car car) {
         Car newCar = Car.builder()
                 .manufacturer(car.getManufacturer())
@@ -76,18 +81,19 @@ public class CarService {
 
         saveCar(newCar);
     }
+
+    //getAllCarsFromDataBase - the function is in used by showAvailableCars (CarFacade class) and during launching application (Main class)
     public void getAllCarsFromDataBase(){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
             CarList.queryList= query.list();
             CarList.listForCarService = CarList.queryList;
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        } catch (Exception getAllCarsException) {
+            getAllCarsException.printStackTrace();
         }
     }
 
-
-
+    //showAvailableCars - method to show list of available cars, can be found in CarFacade class
     public void showAvailableCars() {
         getAllCarsFromDataBase();
         System.out.println("List of all cars:");
@@ -98,6 +104,8 @@ public class CarService {
                     + "Year: " + car.getYear() + " | " + "Price: " + car.getPrice() + " " + car.getCurrency());
         }
     }
+
+    //findCarByManufacturer - function to find specific car by manufacturer, it can be run from CarFacade class
     public void findCarByManufacturer() {
         System.out.println("Provide manufacturer name: ");
         CarValidator validator = new CarValidator();
@@ -112,6 +120,8 @@ public class CarService {
             }
         }
     }
+
+    //selectCarToPrediction - method to choose one of available cars. The method is in used only by checkLoanPrice. Can be found in CarFacade class
     public void selectCarToPrediction() throws Exception {
         Scanner scanner = new Scanner(System.in);
 
@@ -125,6 +135,8 @@ public class CarService {
 
         checkLoanPrice(selectedCarObject);
     }
+
+    //checkLoanPrice - method to calculate loan price of car by year, it's running instantly after selectCarToPrediction method
     private void checkLoanPrice(Car car) {
         Loan loan = new Loan();
         String[] loanTime = {"null", "One year price per month: ",
@@ -150,6 +162,8 @@ public class CarService {
             System.out.println(loanTime[i] + resultPrice + " " + car.getCurrency());
         }
     }
+
+    //editCar - the function is used to update information about car like manufacturer or price, it can be run from Main class
     public void editCar() {
         Scanner scanner = new Scanner(System.in);
         CarService availableCarsToEdit = new CarService();
@@ -254,13 +268,15 @@ public class CarService {
         session.flush();
         transaction.commit();
 
-        }catch (Exception exception){
-            exception.printStackTrace();
+        }catch (Exception editCarException){
+            editCarException.printStackTrace();
             if (transaction != null){
                 transaction.rollback();
             }
         }
     }
+
+    //removeCar - it's function to remove existed car, it can be run from Main class
     public void removeCar() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             if (CarList.listForCarService.isEmpty()) {
@@ -279,8 +295,8 @@ public class CarService {
                 CarList.listForCarService = CarList.queryList;
                 System.out.println(query.getResultList());
             }
-        }catch (Exception exception){
-            exception.printStackTrace();
+        }catch (Exception removeCarException){
+            removeCarException.printStackTrace();
         }
     }
 }

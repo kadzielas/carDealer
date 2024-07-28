@@ -4,8 +4,8 @@ import com.car.dealer.facade.CarFacade;
 import com.car.dealer.service.CarService;
 import java.util.Scanner;
 
-public class Demo {
-    public static void main(String[] args) throws Exception {
+public class Main {
+    public static void main(String[] args){
         final CarService connectToDataBase = new CarService();
         connectToDataBase.getAllCarsFromDataBase();
         Scanner scanner = new Scanner(System.in);
@@ -43,6 +43,5 @@ public class Demo {
             }
         } while (menu != 0);
         scanner.close();
-
     }
 }
