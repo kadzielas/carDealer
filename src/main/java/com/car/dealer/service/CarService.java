@@ -43,7 +43,7 @@ public class CarService {
     public void validateCar() {
         Car carValidate = new Car();
         CarValidator validator = new CarValidator();
-        carValidate.setYear(0);
+
 
         System.out.println("Provide manufacturer: ");
         carValidate.setManufacturer(validator.validateManufacturer());
@@ -54,7 +54,7 @@ public class CarService {
         System.out.println("Provide type of fuel: ");
         carValidate.setFuel(validator.validateFuel());
         System.out.println("Provide year of car: ");
-        carValidate.setYear(validator.validateYear(carValidate.getYear()));
+        carValidate.setYear(validator.validateYear());
         System.out.print("Provide price: ");
         carValidate.setPrice(validator.validatePrice(carValidate.getPrice()));
         System.out.println("Provide currency: ");
@@ -236,7 +236,7 @@ public class CarService {
                 }
                 case 5 -> {
                     System.out.println("Provide new year for selected car: ");
-                    selectedCarObject.setYear(validator.validateYear(selectedCarObject.getYear()));
+                    selectedCarObject.setYear(validator.validateYear());
                     Car car = session.get(Car.class, selectedCarObject.getId());
                     car.setYear(selectedCarObject.getYear());
                     session.update(car);

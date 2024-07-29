@@ -6,9 +6,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args){
-        final CarService connectToDataBase = new CarService();
-        connectToDataBase.getAllCarsFromDataBase();
+        final CarService carService = new CarService();
+        carService.getAllCarsFromDataBase();
         Scanner scanner = new Scanner(System.in);
+
         int menu;
         do {
             System.out.println("""
@@ -27,16 +28,13 @@ public class Main {
                     CarFacade.CarList();
                     break;
                 case 2:
-                    final CarService validator = new CarService();
-                    validator.validateCar();
+                    carService.validateCar();
                     break;
                 case 3:
-                   final CarService editor = new CarService();
-                    editor.editCar();
+                    carService.editCar();
                     break;
                 case 4:
-                    final CarService remover = new CarService();
-                    remover.removeCar();
+                    carService.removeCar();
                     break;
                 case 0:
                     System.out.println("\nSee you later!");

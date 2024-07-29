@@ -1,3 +1,4 @@
 TODO
-1. Plików txt nadal nie można podejrzeć pod względem zawartości - nie działają
-2. Widze, ze nie idą ci recordy, więc sugeruje zmienić record CarList, na prosta klasę modelową jak w przypadku Car
+1. W JSON (?) stworzyć dla każdego manufacturer'a dostępne modele
+2. Dodać aktualny kurs walut
+3. Gdy zmienia się waluta samochodu to żeby od razu przewalutowało $$$$$$

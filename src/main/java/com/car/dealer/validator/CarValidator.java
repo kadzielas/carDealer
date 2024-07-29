@@ -6,6 +6,9 @@ import com.car.dealer.common.Manufacturer;
 import com.car.dealer.common.Model;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CarValidator {
@@ -72,18 +75,27 @@ public class CarValidator {
         return currency;
     }
 
-    public int validateYear(int year) {
+    public int validateYear() {
+        int year = 0;
+        int currentYear = Integer.parseInt(new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime()));
+        boolean test = true;
+
         do {
             try {
                 int yearInput = scanner.nextInt();
-                if (yearInput > 1950 && yearInput < 2025) year = yearInput;
-                break;
-            } catch (Exception e) {
+                if (yearInput > 1950 && yearInput < (currentYear + 1)){
+                    year = yearInput;
+                    test = false;
+                }
+                else {
+                    System.out.println("Year must be between 1950 and " + (currentYear + 1));
+                }
+            } catch (InputMismatchException e) {
                 System.out.println("Year example: 1990, 2010, 2024");
                 System.out.println("Please provide correct year of car: ");
                 scanner.nextInt();
             }
-        } while (true);
+        } while (test);
         return year;
     }
 
