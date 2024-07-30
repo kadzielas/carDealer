@@ -11,12 +11,14 @@ public class CarFacade {
         do {
             try {
 
-                System.out.println("""
+                System.out.print("""
+                        \n------------------------------
                         1.Show list of available cars
                         2.Find cars by manufacturer
                         3.Check price on loan
                         0.Home page
-                        \nWhere are we going?:""");
+                        ------------------------------
+                        \nWhere are we going?:\s""");
                 menu = scanner.nextByte();
                 System.out.println("\n");
 

@@ -2,21 +2,24 @@
         "http://www.hibernate.org/dtd/hibernate-configuration">
 <hibernate-configuration>
     <session-factory>
-        <!-- Konfiguracja połączenia z PostgreSQL -->
+        <!-- JDBC Database connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/cardealer</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">1234</property>
 
-        <!-- Dialekt bazy danych -->
+        <!-- Specify dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
 
-        <!-- Konfiguracja opcji Hibernate -->
+        <!-- Hibernate config -->
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
 
-        <!-- Mapa klas -->
+        <!-- Echo all executed SQL to stdout (remove or comment out this line to hide SQL) -->
+        <property name="hibernate.show_sql">false</property>
+
+        <!-- Mapped entity classes -->
         <mapping class="com.car.dealer.model.Car"/>
     </session-factory>
 </hibernate-configuration>

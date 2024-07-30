@@ -19,8 +19,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 
-@Data
+
 @Builder
+@Data
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity

@@ -2,3 +2,4 @@ TODO
 1. W JSON (?) stworzyć dla każdego manufacturer'a dostępne modele
 2. Dodać aktualny kurs walut
 3. Gdy zmienia się waluta samochodu to żeby od razu przewalutowało $$$$$$
+4. Poprawić tworzenie auta (fuel i currency)

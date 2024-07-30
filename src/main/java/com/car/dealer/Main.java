@@ -10,16 +10,19 @@ public class Main {
         carService.getAllCarsFromDataBase();
         Scanner scanner = new Scanner(System.in);
 
+
         int menu;
         do {
-            System.out.println("""
+            System.out.print("""
+                    ------------------------------
                     Home page
                     \n1.Buy car
                     2.Add new car
                     3.Edit car
                     4.Remove car
                     0.Exit
-                    \nWhere are we going?:""");
+                    ------------------------------
+                    \nWhere are we going?:\s""");
 
             menu = scanner.nextInt();
 
