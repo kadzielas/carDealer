@@ -1,5 +1,6 @@
 package com.car.dealer.service;
 
+import com.car.dealer.common.Currency;
 import com.car.dealer.common.Manufacturer;
 import com.car.dealer.config.HibernateUtil;
 import com.car.dealer.model.Car;
@@ -11,13 +12,41 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Scanner;
 
 
 public class CarService {
     final private Scanner scanner = new Scanner(System.in);
+
+    private void convertAmount(){
+
+        BigDecimal amount = new BigDecimal(100);
+        Currency firstCurrency = Currency.PLN;
+        Currency secondCurrency = Currency.EUR;
+
+        String urlConnect = "https://api.frankfurter.app/latest?amount=" + amount + "&from=" + firstCurrency + "&to=" + secondCurrency;
+
+        try {
+            URL url = new URL(urlConnect);
+            URLConnection urlConnection = url.openConnection();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String n;
+            while ((n = br.readLine()) != null) {
+                System.out.println(n);
+            }
+
+            br.close();
+        } catch (Exception apiConvertAmount){
+            apiConvertAmount.printStackTrace();
+        }
+    }
 
     //saveCar - function to save car into database, it is used only in createCar function
     private void saveCar(Car car) {
@@ -85,9 +114,7 @@ public class CarService {
     //getAllCarsFromDataBase - the function is in used by showAvailableCars (CarFacade class) and during launching application (Main class)
     public void getAllCarsFromDataBase() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Car> query = session.createNativeQuery("SELECT * FROM car", Car.class);
-            CarList.queryList = query.list();
-            CarList.listForCarService = CarList.queryList;
+            CarList.listForCarService = session.createNativeQuery("SELECT * FROM car", Car.class).getResultList();
         } catch (Exception getAllCarsException) {
             getAllCarsException.printStackTrace();
         }
