@@ -7,10 +7,14 @@ import com.car.dealer.model.Car;
 import com.car.dealer.model.CarList;
 import com.car.dealer.model.Loan;
 import com.car.dealer.validator.CarValidator;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -24,27 +28,38 @@ import java.util.Scanner;
 public class CarService {
     final private Scanner scanner = new Scanner(System.in);
 
-    private void convertAmount(){
+    //convertAmount - if currency of car has been changed then following method convert price to new currency
+    private void convertAmount(Currency previousCurrency, Currency newCurrency ,BigDecimal amount, Car car){
+        Transaction transaction = null;
 
-        BigDecimal amount = new BigDecimal(100);
-        Currency firstCurrency = Currency.PLN;
-        Currency secondCurrency = Currency.EUR;
+        String urlConnect = "https://api.frankfurter.app/latest?amount=" + amount + "&from=" + previousCurrency + "&to=" + newCurrency;
 
-        String urlConnect = "https://api.frankfurter.app/latest?amount=" + amount + "&from=" + firstCurrency + "&to=" + secondCurrency;
-
-        try {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             URL url = new URL(urlConnect);
             URLConnection urlConnection = url.openConnection();
+            OkHttpClient client = new OkHttpClient();
+
+            Request request = new Request.Builder()
+                    .url(urlConnect)
+                    .get()
+                    .build();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-            String n;
-            while ((n = br.readLine()) != null) {
-                System.out.println(n);
-            }
-
+            Response response = client.newCall(request).execute();
+            String stringResponse = response.body().string();
+            JSONObject jsonObject = new JSONObject(stringResponse);
+            JSONObject ratesObject = jsonObject.getJSONObject("rates");
+            BigDecimal rate = ratesObject.getBigDecimal(String.valueOf(newCurrency));
+            car.setPrice(new BigDecimal(String.valueOf(rate)));
             br.close();
+            session.flush();
+            transaction.commit();
         } catch (Exception apiConvertAmount){
             apiConvertAmount.printStackTrace();
+            if (transaction != null){
+                transaction.rollback();
+            }
         }
     }
 
@@ -281,9 +296,14 @@ public class CarService {
                     }
                     case 7 -> {
                         System.out.println("Provide new currency for selected car: ");
-                        selectedCarObject.setCurrency(validator.validateCurrency());
                         Car car = session.get(Car.class, selectedCarObject.getId());
+                        Currency previousCurrency = car.getCurrency();
+                        selectedCarObject.setCurrency(validator.validateCurrency());
                         car.setCurrency(selectedCarObject.getCurrency());
+                        Currency newCurrency = car.getCurrency();
+                        BigDecimal amount = car.getPrice();
+                        convertAmount(previousCurrency, newCurrency, amount, car);
+
                         session.update(car);
                         System.out.println("Change has been saved");
                         System.out.println("\n");
