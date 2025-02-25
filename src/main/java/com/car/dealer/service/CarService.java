@@ -71,7 +71,7 @@ public class CarService {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(car);
+            session.saveOrUpdate(car);
             session.flush();
             transaction.commit();
 
@@ -129,7 +129,7 @@ public class CarService {
     //getAllCarsFromDataBase - the function is in used by showAvailableCars (CarFacade class) and during launching application (Main class)
     public void getAllCarsFromDataBase() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CarList.listForCarService = session.createNativeQuery("SELECT * FROM car", Car.class).getResultList();
+            CarList.listForCarService = session.createNativeQuery("SELECT * FROM cars;", Car.class).getResultList();
         } catch (Exception getAllCarsException) {
             getAllCarsException.printStackTrace();
         }
@@ -216,7 +216,7 @@ public class CarService {
         int menu;
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
+            transaction = session.getTransaction();
             System.out.println("Provide ID of car to edit");
             int carID = scanner.nextInt();
 
@@ -303,7 +303,6 @@ public class CarService {
                         Currency newCurrency = car.getCurrency();
                         BigDecimal amount = car.getPrice();
                         convertAmount(previousCurrency, newCurrency, amount, car);
-
                         session.update(car);
                         System.out.println("Change has been saved");
                         System.out.println("\n");
@@ -335,7 +334,7 @@ public class CarService {
                 System.out.println("Enter car ID to remove: ");
                 int carID = scanner.nextInt();
 
-                Query<Car> query = session.createNativeQuery("DELETE FROM car WHERE id = :id", Car.class);
+                Query<Car> query = session.createNativeQuery("DELETE FROM cars WHERE id = :id", Car.class);
                 query.setParameter("id", carID);
                 System.out.println("Car with ID " + carID + " has been deleted.");
                 CarList.queryList = query.getResultList();

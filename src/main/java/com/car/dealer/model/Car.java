@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "car")
+@Table(name = "cars")
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

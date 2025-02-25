@@ -35,6 +35,7 @@ public class CarValidator {
             try {
                 String manufacturerInput = scanner.nextLine().toUpperCase();
                 manufacturer = Manufacturer.valueOf(manufacturerInput);
+
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("Manufacturer example: OPEL, AUDI, MERCEDES, BMW");
@@ -53,7 +54,7 @@ public class CarValidator {
                 fuel = Fuel.valueOf(fuelInput);
                 break;
             } catch (IllegalArgumentException e) {
-                System.out.println("Fuel example: PB, LPG, DIESEL");
+                System.out.println("Fuel example: PB, LPG, DIESEL or HYBRID");
                 System.out.println("Please provide correct type of fuel: ");
             }
         } while (true);
@@ -66,10 +67,13 @@ public class CarValidator {
             try {
                 String currencyInput = scanner.nextLine().toUpperCase();
                 currency = Currency.valueOf(currencyInput);
+
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("Currency example: PLN, EUR, USD, GBP");
                 System.out.println("Please provide correct currency: ");
+            } catch (IllegalStateException exception) {
+                System.out.println("Something went wrong, please try again");
             }
         } while (true);
         return currency;
