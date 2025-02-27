@@ -4,9 +4,9 @@
     <session-factory>
         <!-- JDBC Database connection settings -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://78.46.223.31:5432/cardealer</property>
+        <property name="hibernate.connection.url">jdbc:postgresql:///cardealer</property>
         <property name="hibernate.connection.username">postgres</property>
-        <property name="hibernate.connection.password">sIE2l0BTNH9NkiFbtScrx7baM9m7JrTIgGUA0cRWoW4IJp6R8vMgSKlxFT7slo1S</property>
+        <property name="hibernate.connection.password"></property>
 
         <!-- Specify dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
