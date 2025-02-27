@@ -3,14 +3,13 @@ package com.car.dealer.facade;
 import com.car.dealer.service.CarService;
 
 import java.util.Scanner;
-public class CarFacade {
-    public static void CarList() {
+public class carsFacade {
+    public static void availableCars() {
         Scanner scanner = new Scanner(System.in);
         int menu = 0;
 
         do {
             try {
-
                 System.out.print("""
                         \n------------------------------
                         1.Show list of available cars
@@ -45,12 +44,11 @@ public class CarFacade {
                     case 0:
                 }
 
-            } catch (Exception exception) {
+            } catch (Exception menuException) {
                 System.out.println("Wrong number. You are back to previous page.\n");
-                exception.printStackTrace();
-
             }
         } while (menu != 0);
+        scanner.close();
     }
 }
 

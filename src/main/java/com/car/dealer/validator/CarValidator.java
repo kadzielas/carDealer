@@ -12,7 +12,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CarValidator {
-   final private Scanner scanner = new Scanner(System.in); //czy można zrobić to public i używać w innych klasach
+   final private Scanner scanner = new Scanner(System.in);
 
     public Model validateModel() {
         Model model;
@@ -21,7 +21,7 @@ public class CarValidator {
                 String modelInput = scanner.nextLine().toUpperCase();
                 model = Model.valueOf(modelInput);
                 break;
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException modelException) {
                 System.out.println("Model example: SERIES2, ACLASS, SUPERDUTY, ZAFIRA");
                 System.out.println("Please provide correct model: ");
             }
@@ -37,7 +37,7 @@ public class CarValidator {
                 manufacturer = Manufacturer.valueOf(manufacturerInput);
 
                 break;
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException manufacturerException) {
                 System.out.println("Manufacturer example: OPEL, AUDI, MERCEDES, BMW");
                 System.out.println("Please provide correct manufacturer: ");
             }
@@ -53,7 +53,7 @@ public class CarValidator {
                 String fuelInput = scanner.nextLine().toUpperCase();
                 fuel = Fuel.valueOf(fuelInput);
                 break;
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException fuelException) {
                 System.out.println("Fuel example: PB, LPG, DIESEL or HYBRID");
                 System.out.println("Please provide correct type of fuel: ");
             }
@@ -69,11 +69,9 @@ public class CarValidator {
                 currency = Currency.valueOf(currencyInput);
 
                 break;
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException currencyException) {
                 System.out.println("Currency example: PLN, EUR, USD, GBP");
                 System.out.println("Please provide correct currency: ");
-            } catch (IllegalStateException exception) {
-                System.out.println("Something went wrong, please try again");
             }
         } while (true);
         return currency;
@@ -94,7 +92,7 @@ public class CarValidator {
                 else {
                     System.out.println("Year must be between 1950 and " + (currentYear + 1));
                 }
-            } catch (InputMismatchException e) {
+            } catch (InputMismatchException yearException) {
                 System.out.println("Year example: 1990, 2010, 2024");
                 System.out.println("Please provide correct year of car: ");
                 scanner.nextInt();
@@ -109,7 +107,7 @@ public class CarValidator {
                 BigDecimal priceInput = scanner.nextBigDecimal();
                 if (isBiggerThanZero(priceInput)) price = priceInput;
                 break;
-            } catch (Exception e) {
+            } catch (Exception priceException) {
                 System.out.println("Price example: 3000.00, 5200.50");
                 System.out.println("Please provide correct price value: ");
                 scanner.next();
@@ -125,7 +123,7 @@ public class CarValidator {
                 if (isBiggerThanZero(engineInput)) engine = engineInput;
                 break;
 
-            } catch (Exception e) {
+            } catch (Exception engineException) {
                 System.out.println("Engine example: 3.0, 2.5, 1.4");
                 System.out.println("Please provide correct engine:");
                 scanner.next();
@@ -134,9 +132,9 @@ public class CarValidator {
         return engine;
     }
 
-    private Boolean isBiggerThanZero(BigDecimal firstValue) {
+    private Boolean isBiggerThanZero(BigDecimal valueToCheck) {
 
-        int comparisonValue = firstValue.compareTo(BigDecimal.ZERO);
+        int comparisonValue = valueToCheck.compareTo(BigDecimal.ZERO);
         if (comparisonValue > 0) {
             return true;
         } else if (comparisonValue < 0) {
